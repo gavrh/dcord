@@ -28,7 +28,7 @@ client, err := discord.New(intents int, partials int, api int, shards int)
 
 // OnReady callback
 client.OnReady(func(){
-    fmt.Prinft("%t is online...", client.User.Username)
+    fmt.Printf("%s is online...", client.User.Username)
 })
 ... // other callbacks, error checks, and whatever else you want
 
