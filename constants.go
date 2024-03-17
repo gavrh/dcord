@@ -1,8 +1,7 @@
-package disgord
+package discord
 
 // event constants
 type Event string
-
 const (
 	Event_HELLO                                  Event = "HELLO"
 	Event_READY                                  Event = "READY"
@@ -74,7 +73,6 @@ const (
 
 // intent constants
 type Intent int
-
 const (
 	Intent_ALL                           Intent = 3276799
 	Intent_GUILDS                        Intent = 1 << 0
@@ -100,7 +98,6 @@ const (
 
 // user flag constants
 type UserFlag int
-
 const (
 	UserFlag_STAFF                   UserFlag = 1 << 0
 	UserFlag_PARTNER                 UserFlag = 1 << 1
@@ -121,7 +118,6 @@ const (
 
 // user premium constants
 type UserPremium int
-
 const (
 	UserPremium_NONE          UserPremium = 0
 	UserPremium_NITRO_CLASSIC UserPremium = 1

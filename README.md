@@ -49,7 +49,7 @@ examples will be coming soon...
     <br/>
     <br/>
     <h3>Made with ❤️</h3>
-    by: <a href="https://github.com/grhx" target="_blank">github.com/grhx</a> ~> <a href="https://grh.dev" target="_blank">grh.dev</a>
+    by: <a href="https://github.com/grhx" target="_blank">github.com/grhx</a> ~> <a href="https://grh.lol" target="_blank">grh.lol</a>
     <br/>
     <br/>
     <img align="center" width=100 src="https://user-images.githubusercontent.com/79518089/141609256-ddcafafa-dca0-4cc3-b203-008e441ae2a2.gif"/>

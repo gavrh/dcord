@@ -1,1 +1,1 @@
-package disgord
+package discord
