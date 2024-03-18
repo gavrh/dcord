@@ -36,8 +36,19 @@ func (c *Client) Login(token string) {
 	// whatever 
 	// 
 	fmt.Printf("%s is now online...\n", c.User.Persona)
+	done := make(chan bool)
+	go c.dialGateway(done, token)
+	
+
+	// keep alive
+	for {
+		select {
+		case <-done:
+			return
+		}
+	}
 }
 // client events
-func (c *Client) EventCallback(e Event, cb func(c *Client, d ...any)) {
-	c.Session.Data.EventCallbacks[string(e)] = cb
-}
+// func (c *Client) EventCallback(e Event, cb func(c *Client, d ...any)) {
+// 	c.Session.Data.EventCallbacks[string(e)] = cb
+// }

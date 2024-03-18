@@ -71,6 +71,22 @@ const (
 	Event_WEBHOOKS_UPDATE                        Event = "WEBHOOKS_UPDATE"
 )
 
+// opcode constants
+type Opcode int
+const (
+	Opcode_DISPATCH					Opcode = 0
+	Opcode_HEARTBEAT				Opcode = 1
+	Opcode_IDENTIFY					Opcode = 2
+	Opcode_PRESENCE_UPDATE			Opcode = 3
+	Opcode_VOICE_STATE_UPDATE		Opcode = 4
+	Opcode_RESUME					Opcode = 6
+	Opcode_RECONNECT				Opcode = 7
+	Opcode_REQUEST_GUILD_MEMBERS	Opcode = 8
+	Opcode_INVALID_SESSION			Opcode = 9
+	Opcode_HELLO					Opcode = 10
+	Opcode_HEARTBEAT_ACK			Opcode = 11
+)
+
 // intent constants
 type Intent int
 const (
