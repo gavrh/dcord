@@ -7,16 +7,16 @@ type Channel struct {
 }
 
 // channel manager struct
-type ChannelManager struct {
+type channelManager struct {
 	channels map[string]*Channel
 }
 
-func (channels ChannelManager) Add(channel *Channel) {
+func (channels channelManager) Add(channel *Channel) {
 	channels.channels[channel.Id] = channel
 }
-func (channels ChannelManager) Get(cid string) *Channel {
+func (channels channelManager) Get(cid string) *Channel {
 	return channels.channels[cid]
 }
-func (channels ChannelManager) Delete(cid string) {
+func (channels channelManager) Delete(cid string) {
 	delete(channels.channels, cid)
 }

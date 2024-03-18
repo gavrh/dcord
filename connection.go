@@ -1,14 +1,15 @@
 package discord
 
 import (
-	"github.com/gorilla/websocket"
-	"log"
-	"os/signal"
-	"os"
 	"encoding/json"
 	"fmt"
-	"time"
+	"log"
+	"os"
+	"os/signal"
 	"runtime"
+	"time"
+
+	"github.com/gorilla/websocket"
 )
 
 // # Connection Struct
@@ -28,7 +29,7 @@ type Payload struct {
 	Opcode		int		`json:"op"`
 	Sequence	int		`json:"s"`
 	Type		string 	`json:"t"`
-	Data		any		`json:"d"`
+	Data		map[string]any		`json:"d"`
 }
 
 
@@ -68,29 +69,10 @@ func heartbeat(ch chan bool, conn *websocket.Conn) {
 func (c *Client) dialGateway(ch chan bool, token string) {
 	defer close(ch)
 
-	println("Beginning of dial")
-
-	// upgrader
-	// var upgrader = websocket.Upgrader{
-	// 	ReadBufferSize: 1024,
-	// 	WriteBufferSize: 1024,
-	// }
-	// // handler
-	// func handler(w http.http.ResponseWriter, r *http.Request) {
-
-	// 	conn, err := upgrader.Upgrade(w, r, nil)
-	// 	if err != nil {
-	// 		log.Fatal(err)
-	// 	}
-
-	// 	return
-	// }
-
 	interrupt := make(chan os.Signal, 1)
 	done := make(chan bool)
 	signal.Notify(interrupt, os.Interrupt)
-	conn, resp, err := websocket.DefaultDialer.Dial("wss://gateway.discord.gg/?v=10&encoding=json", nil)
-	fmt.Printf("GATEWAY CONNECTION RESPONSE: %v\n", resp)
+	conn, _, err := websocket.DefaultDialer.Dial("wss://gateway.discord.gg/?v=10&encoding=json", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -114,6 +96,13 @@ func (c *Client) dialGateway(ch chan bool, token string) {
 			switch Opcode(event.Opcode) {
 			// dipatch
 			case Opcode_DISPATCH:
+				switch Event(event.Type) {
+				case Event_READY:
+					c.onReady(c)
+				case Event_MESSAGE_CREATE:
+					fmt.Println("HERE")
+					c.onMessageCreate(c, &Message{Id: fmt.Sprint(event.Data["id"]), Content: fmt.Sprint(event.Data["content"])})
+				}
 			// heartbeat
 			case Opcode_HEARTBEAT:
 			// reconnect

@@ -7,9 +7,9 @@ import (
 // init client func
 func Init(intents []Intent, partials int, api_version int, shards int) *Client {
 	return &Client{
-		Users: UserManager{users: make(map[string]*User)},
-		Guilds: GuildManager{guilds: make(map[string]*Guild)},
-		Channels: ChannelManager{channels: make(map[string]*Channel)},
+		Users: userManager{users: make(map[string]*User)},
+		Guilds: guildManager{guilds: make(map[string]*Guild)},
+		Channels: channelManager{channels: make(map[string]*Channel)},
 		Session: Session{
 			ApiVersion: api_version,
 			GatewayVersion: api_version,

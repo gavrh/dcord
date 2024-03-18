@@ -41,13 +41,13 @@ type Guild struct {
 }
 
 // guild manager struct
-type GuildManager struct {
+type guildManager struct {
 	guilds map[string]*Guild
 }
 
-func (guilds GuildManager) Add(guild *Guild) {
+func (guilds guildManager) Add(guild *Guild) {
 	guilds.guilds[guild.Id] = guild
 }
-func (guilds GuildManager) Get(gid string) *Guild {
+func (guilds guildManager) Get(gid string) *Guild {
 	return guilds.guilds[gid]
 }

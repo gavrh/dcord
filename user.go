@@ -31,13 +31,13 @@ type User struct {
 }
 
 // user manager struct
-type UserManager struct {
+type userManager struct {
 	users map[string]*User
 }
 
-func (users UserManager) Add(user *User) {
+func (users userManager) Add(user *User) {
 	users.users[user.Id] = user
 }
-func (users UserManager) Get(uid string) *User {
+func (users userManager) Get(uid string) *User {
 	return users.users[uid]
 }
