@@ -1,6 +1,5 @@
 package discord
 
-
 // # Client Struct
 type Client struct {
 	User		ClientUser
@@ -19,16 +18,13 @@ type Client struct {
 	onGuildUpdate	func(*Client, *Guild, Guild)
 	onGuildDelete	func(*Client, Guild)
 	onMessageCreate func(*Client, *Message)
+	onMessageUpdate func(*Client, *Message, Message)
+	onMessageDelete func(*Client, Message)
 }
 // client login
 func (c *Client) Login(token string) {
 	println("token: "+token)
-	c.User = ClientUser{
-		Id: "12345",
-		Username: "ananya0807",
-		Persona: "ananya",
-		Bot: true,
-	}
+	c.Session.Data.Token = token
 	done := make(chan bool)
 	go c.dialGateway(done, token)
 	
@@ -47,8 +43,8 @@ func (c *Client) Debug(callback func(client *Client, debug_message *DebugMessage
 func (c *Client) Ready(callback func(client *Client)) { c.onReady = callback }
 // GUILDS //
 func (c *Client) GuildCreate(callback func(client *Client, guild *Guild)) { c.onGuildCreate = callback }
-// GuildUpdate
-// GuildDelete
+func (c *Client) GuildUpdate(callback func(client *Client, guild *Guild, old_guild Guild)) { c.onGuildUpdate = callback }
+func (c *Client) GuildDelete(callback func(client *Client, guild Guild)) { c.onGuildDelete = callback }
 // GuildRoleCreate
 // GuildRoleUpdate
 // GuildRoleDelete
@@ -88,8 +84,8 @@ func (c *Client) GuildCreate(callback func(client *Client, guild *Guild)) { c.on
 // PresenceUpdate
 // (GUILD / DIRECT) MESSAGES //
 func (c *Client) MessageCreate(callback func(client *Client, message *Message)) { c.onMessageCreate = callback }
-// MessageUpdate
-// MessageDelete
+func (c *Client) MessageUpdate(callback func(client *Client, message *Message, old_message Message)) { c.onMessageUpdate = callback }
+func (c *Client) MessageDelete(callback func(client *Client, message Message)) { c.onMessageDelete = callback }
 // MessageBulkDelete
 // GUILD MESSAGE TYPING //
 // TypingStart

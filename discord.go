@@ -5,7 +5,7 @@ import (
 )
 
 // init client func
-func Init(intents []Intent, partials int, api_version int, shards int) *Client {
+func Init(intents []Intent, partials int, api_version int, shards int, cache bool) *Client {
 	return &Client{
 		Users: userManager{users: make(map[string]*User)},
 		Guilds: guildManager{guilds: make(map[string]*Guild)},

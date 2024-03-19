@@ -1,18 +1,25 @@
 package discord
 
+import (
+
+)
+
 // client user struct
 type ClientUser struct {
-	Id       string
-	Username string
-	Persona  string
-	Bot      bool
+	Id       	string
+	Username 	string	
+	Tag			string	`json:"discriminator"`
+	Bot     	bool
+	Mfa			bool
+	Email		string
+	Avatar		string
 }
 
 // user struct
 type User struct {
 	Id               string
 	Username         string
-	Tag              string
+	Tag              int
 	GlobalName       string // optional
 	Avatar           string // optional
 	Bot              bool

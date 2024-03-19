@@ -24,17 +24,9 @@ type Connection struct {
 	Heartbeats	int
 }
 
-// Payload Struct
-type Payload struct {
-	Opcode		int		`json:"op"`
-	Sequence	int		`json:"s"`
-	Type		string 	`json:"t"`
-	Data		map[string]any		`json:"d"`
-}
-
 
 func identify(conn *websocket.Conn, token string) {
-	identify_payload := Payload{
+	identify_payload := sendPaylod{
 		Opcode: 2,
 		Data: map[string]any{
 			"token":   		token,
@@ -55,7 +47,7 @@ func identify(conn *websocket.Conn, token string) {
 
 func heartbeat(ch chan bool, conn *websocket.Conn) {
 	defer close(ch)
-	hb_msg, err := json.Marshal(Payload{Opcode: 1,Data:nil})
+	hb_msg, err := json.Marshal(sendPaylod{Opcode: 1,Data:nil})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -84,24 +76,42 @@ func (c *Client) dialGateway(ch chan bool, token string) {
 				log.Println("read:", err)
 				return
 			}
-			var event Payload
-			err = json.Unmarshal(message, &event)
+			var payload payload
+			err = json.Unmarshal(message, &payload)
 			if err != nil {
 				log.Fatal(err)
 			}
-			times := time.Now()
-			log_debug := fmt.Sprintf("\x1b[42m%d/%d/%d %d:%d:%d LOG:\x1b[0m", times.Year(), times.Month(), times.Day(), times.Hour(), times.Minute(), times.Second())
-			event_debug := fmt.Sprintf("%s %s", log_debug, fmt.Sprintf("op: %d, t: %s, s: %d", event.Opcode, event.Type, event.Sequence))
-			fmt.Println(event_debug)
-			switch Opcode(event.Opcode) {
+			switch Opcode(payload.Opcode) {
 			// dipatch
 			case Opcode_DISPATCH:
-				switch Event(event.Type) {
+
+				// debug //
+				times := time.Now()
+				log_debug := fmt.Sprintf("\x1b[42m%d/%d/%d %d:%d:%d LOG:\x1b[0m", times.Year(), times.Month(), times.Day(), times.Hour(), times.Minute(), times.Second())
+				event_debug := fmt.Sprintf("%s %s", log_debug, fmt.Sprintf("op: %d, t: %s, s: %d", payload.Opcode, payload.Type, payload.Sequence))
+				fmt.Println(event_debug)
+				///////////
+				// send log msg //
+				if payload.Type != "MESSAGE_CREATE" {
+					go httpMesageCreate(c, "1161886243123122186", fmt.Sprintf("t: %s, s: %d", payload.Type, payload.Sequence))
+				}
+				/////////////////
+
+				switch Event(payload.Type) {
 				case Event_READY:
-					c.onReady(c)
+					// ready payload data
+					var readyData readyPayload
+					err = json.Unmarshal(message, &readyData)
+					if err != nil { log.Fatal(err) }
+					fmt.Printf("\nREADY DATA\n%v\n\n", readyData)
+					// set client user
+					c.User = *readyData.Data.User
+					// ready callback
+					go c.onReady(c)
 				case Event_MESSAGE_CREATE:
 					fmt.Println("HERE")
-					c.onMessageCreate(c, &Message{Id: fmt.Sprint(event.Data["id"]), Content: fmt.Sprint(event.Data["content"])})
+					// c.onMessageCreate(c, &msg)
+				case Event_GUILD_CREATE:
 				}
 			// heartbeat
 			case Opcode_HEARTBEAT:

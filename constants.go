@@ -2,6 +2,7 @@ package discord
 
 // event constants
 type Event string
+
 const (
 	Event_HELLO                                  Event = "HELLO"
 	Event_READY                                  Event = "READY"
@@ -73,22 +74,24 @@ const (
 
 // opcode constants
 type Opcode int
+
 const (
-	Opcode_DISPATCH					Opcode = 0
-	Opcode_HEARTBEAT				Opcode = 1
-	Opcode_IDENTIFY					Opcode = 2
-	Opcode_PRESENCE_UPDATE			Opcode = 3
-	Opcode_VOICE_STATE_UPDATE		Opcode = 4
-	Opcode_RESUME					Opcode = 6
-	Opcode_RECONNECT				Opcode = 7
-	Opcode_REQUEST_GUILD_MEMBERS	Opcode = 8
-	Opcode_INVALID_SESSION			Opcode = 9
-	Opcode_HELLO					Opcode = 10
-	Opcode_HEARTBEAT_ACK			Opcode = 11
+	Opcode_DISPATCH              Opcode = 0
+	Opcode_HEARTBEAT             Opcode = 1
+	Opcode_IDENTIFY              Opcode = 2
+	Opcode_PRESENCE_UPDATE       Opcode = 3
+	Opcode_VOICE_STATE_UPDATE    Opcode = 4
+	Opcode_RESUME                Opcode = 6
+	Opcode_RECONNECT             Opcode = 7
+	Opcode_REQUEST_GUILD_MEMBERS Opcode = 8
+	Opcode_INVALID_SESSION       Opcode = 9
+	Opcode_HELLO                 Opcode = 10
+	Opcode_HEARTBEAT_ACK         Opcode = 11
 )
 
 // intent constants
 type Intent int
+
 const (
 	Intent_ALL                           Intent = 3276799
 	Intent_GUILDS                        Intent = 1 << 0
@@ -114,6 +117,7 @@ const (
 
 // user flag constants
 type UserFlag int
+
 const (
 	UserFlag_STAFF                   UserFlag = 1 << 0
 	UserFlag_PARTNER                 UserFlag = 1 << 1
@@ -134,9 +138,64 @@ const (
 
 // user premium constants
 type UserPremium int
+
 const (
 	UserPremium_NONE          UserPremium = 0
 	UserPremium_NITRO_CLASSIC UserPremium = 1
 	UserPremium_NITRO         UserPremium = 2
 	UserPremium_NITRO_BASIC   UserPremium = 3
+)
+
+// message types
+type MessageType int
+
+const (
+	MessageType_DEFAULT                                      MessageType = 0
+	MessageType_RECIPIENT_ADD                                MessageType = 1
+	MessageType_RECIPIENT_REMOVE                             MessageType = 2
+	MessageType_CALL                                         MessageType = 3
+	MessageType_CHANNEL_NAME_CHANGE                          MessageType = 4
+	MessageType_CHANNEL_ICON_CHANGE                          MessageType = 5
+	MessageType_CHANNEL_PINNED_MESSAGE                       MessageType = 6
+	MessageType_USER_JOIN                                    MessageType = 7
+	MessageType_GUILD_BOOST                                  MessageType = 8
+	MessageType_GUILD_BOOST_TIER_1                           MessageType = 9
+	MessageType_GUILD_BOOST_TIER_2                           MessageType = 10
+	MessageType_GUILD_BOOST_TIER_3                           MessageType = 11
+	MessageType_CHANNEL_FOLLOW_ADD                           MessageType = 12
+	MessageType_GUILD_DISCOVERY_DISQUALIFIED                 MessageType = 14 // skip 13 lol
+	MessageType_GUILD_DISCOVERY_REQUALIFIED                  MessageType = 15
+	MessageType_GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING MessageType = 16
+	MessageType_GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING   MessageType = 17
+	MessageType_THREAD_CREATED                               MessageType = 18
+	MessageType_REPLY                                        MessageType = 19
+	MessageType_CHAT_INPUT_COMMAND                           MessageType = 20
+	MessageType_THREAD_STARTER_MESSAGE                       MessageType = 21
+	MessageType_GUILD_INVITE_REMINDER                        MessageType = 22
+	MessageType_CONTEXT_MENU_COMMAND                         MessageType = 23
+	MessageType_AUTO_MODERATION_ACTION                       MessageType = 24
+	MessageType_ROLE_SUBSCRIPTION_PURCHASE                   MessageType = 25
+	MessageType_INTERACTION_PREMIUM_UPSELL                   MessageType = 26
+	MessageType_STAGE_START                                  MessageType = 27
+	MessageType_STAGE_END                                    MessageType = 28
+	MessageType_STAGE_SPEAKER                                MessageType = 29
+	MessageType_STAGE_TOPIC                                  MessageType = 31
+	MessageType_GUILD_APPLICATION_PREMIUM_SUBSCRIPTION       MessageType = 32
+)
+
+// message flags
+type MessageFlag int
+
+const (
+	MessageFlag_CROSSPOSTED                            MessageFlag = 1 << 0
+	MessageFlag_IS_CROSSPOST                           MessageFlag = 1 << 1
+	MessageFlag_SUPPRESS_EMBEDS                        MessageFlag = 1 << 2
+	MessageFlag_SOURCE_MESSAGE_DELETED                 MessageFlag = 1 << 3
+	MessageFlag_URGENT                                 MessageFlag = 1 << 4
+	MessageFlag_HAS_THREAD                             MessageFlag = 1 << 5
+	MessageFlag_EPHEMERAL                              MessageFlag = 1 << 6
+	MessageFlag_LOADING                                MessageFlag = 1 << 7
+	MessageFlag_FAILED_TO_MENTION_SOME_ROLES_IN_THREAD MessageFlag = 1 << 8
+	MessageFlag_SUPPRESS_NOTIFICATIONS                 MessageFlag = 1 << 12
+	MessageFlag_IS_VOICE_MESSAGE                       MessageFlag = 1 << 13
 )
