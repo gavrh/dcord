@@ -2,7 +2,7 @@
 ![GitHub Release](https://img.shields.io/github/v/release/grhx/disgord?label=pkg%20version) [![Go Reference](https://pkg.go.dev/badge/github.com/grhx/disgord.svg)](https://pkg.go.dev/github.com/grhx/disgord) ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/grhx/disgord?logo=go&label=go.mod&color=08AFD8) [![Discord Gophers](https://img.shields.io/badge/Discord%20Gophers-%23disgord-blue.svg)](https://discord.gg/golang) [![Discord API](https://img.shields.io/badge/Discord%20API-%23go_disgord-blue.svg)](https://discord.com/invite/discord-api)
 
 
-<img align="right" src="https://avatars.githubusercontent.com/u/85959578?s=280&v=4" width="400" />
+<img align="right" src="https://avatars.githubusercontent.com/u/85959578?s=500&v=4" width="300" />
 
 
 Disgord is your ultimate solution for seamless integration with the Discord chat client API, offering robust low-level bindings for effortless interaction. Designed to empower developers with comprehensive access, Disgord provides unparalleled support for Discord's API endpoints, WebSocket interface, and voice functionality.With its nearly complete coverage of all Discord API features, Disgord unlocks limitless possibilities for building dynamic and immersive experiences within the Discord ecosystem. Whether you're crafting bots, managing communities, or orchestrating engaging interactions, Disgord empowers you to unleash your creativity with ease and efficiency. Harness the full potential of Discord integration effortlessly with Disgord.
