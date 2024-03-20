@@ -24,7 +24,7 @@ type Connection struct {
 	Heartbeats	int
 }
 
-
+		
 func identify(conn *websocket.Conn, token string) {
 	identify_payload := sendPaylod{
 		Opcode: 2,
@@ -60,10 +60,11 @@ func heartbeat(ch chan bool, conn *websocket.Conn) {
 
 func (c *Client) dialGateway(ch chan bool, token string) {
 	defer close(ch)
-
+	// concurrency channels
 	interrupt := make(chan os.Signal, 1)
 	done := make(chan bool)
 	signal.Notify(interrupt, os.Interrupt)
+	// connect to gateway
 	conn, _, err := websocket.DefaultDialer.Dial("wss://gateway.discord.gg/?v=10&encoding=json", nil)
 	if err != nil {
 		log.Fatal(err)
@@ -76,6 +77,7 @@ func (c *Client) dialGateway(ch chan bool, token string) {
 				log.Println("read:", err)
 				return
 			}
+			// construct payload
 			var payload payload
 			err = json.Unmarshal(message, &payload)
 			if err != nil {
@@ -84,7 +86,7 @@ func (c *Client) dialGateway(ch chan bool, token string) {
 			switch Opcode(payload.Opcode) {
 			// dipatch
 			case Opcode_DISPATCH:
-
+				
 				// debug //
 				times := time.Now()
 				log_debug := fmt.Sprintf("\x1b[42m%d/%d/%d %d:%d:%d LOG:\x1b[0m", times.Year(), times.Month(), times.Day(), times.Hour(), times.Minute(), times.Second())
@@ -92,8 +94,8 @@ func (c *Client) dialGateway(ch chan bool, token string) {
 				fmt.Println(event_debug)
 				///////////
 				// send log msg //
-				if payload.Type != "MESSAGE_CREATE" {
-					go httpMesageCreate(c, "1161886243123122186", fmt.Sprintf("t: %s, s: %d", payload.Type, payload.Sequence))
+				if payload.Type != Event_MESSAGE_CREATE {
+					go httpMessageCreate(c, "1161886243123122186", fmt.Sprintf("t: %s, s: %d", payload.Type, payload.Sequence))
 				}
 				/////////////////
 
@@ -103,7 +105,6 @@ func (c *Client) dialGateway(ch chan bool, token string) {
 					var readyData readyPayload
 					err = json.Unmarshal(message, &readyData)
 					if err != nil { log.Fatal(err) }
-					fmt.Printf("\nREADY DATA\n%v\n\n", readyData)
 					// set client user
 					c.User = *readyData.Data.User
 					// ready callback

@@ -1,10 +1,15 @@
 package discord
 
-// event constants
 type Event string
+type Opcode int
+type Intent int
+type UserFlag int
+type UserPremium int
+type MessageType int
+type MessageFlag int
 
 const (
-	Event_HELLO                                  Event = "HELLO"
+	// events
 	Event_READY                                  Event = "READY"
 	Event_RESUMED                                Event = "RESUMED"
 	Event_RECONNECT                              Event = "RECONNECT"
@@ -70,12 +75,7 @@ const (
 	Event_VOICE_STATE_UPDATE                     Event = "VOICE_STATE_UPDATE"
 	Event_VOICE_SERVER_UPDATE                    Event = "VOICE_SERVER_UPDATE"
 	Event_WEBHOOKS_UPDATE                        Event = "WEBHOOKS_UPDATE"
-)
-
-// opcode constants
-type Opcode int
-
-const (
+	// opcodes
 	Opcode_DISPATCH              Opcode = 0
 	Opcode_HEARTBEAT             Opcode = 1
 	Opcode_IDENTIFY              Opcode = 2
@@ -87,12 +87,7 @@ const (
 	Opcode_INVALID_SESSION       Opcode = 9
 	Opcode_HELLO                 Opcode = 10
 	Opcode_HEARTBEAT_ACK         Opcode = 11
-)
-
-// intent constants
-type Intent int
-
-const (
+	// intent
 	Intent_ALL                           Intent = 3276799
 	Intent_GUILDS                        Intent = 1 << 0
 	Intent_GUILD_MEMBERS                 Intent = 1 << 1
@@ -113,12 +108,7 @@ const (
 	Intent_GUILD_SCHEDULED_EVENTS        Intent = 1 << 16
 	Intent_AUTO_MODERATION_CONFIGURATION Intent = 1 << 20
 	Intent_AUTO_MODERATION_EXECUTION     Intent = 1 << 21
-)
-
-// user flag constants
-type UserFlag int
-
-const (
+	// user flag
 	UserFlag_STAFF                   UserFlag = 1 << 0
 	UserFlag_PARTNER                 UserFlag = 1 << 1
 	UserFlag_HYPESQUAD               UserFlag = 1 << 2
@@ -134,22 +124,12 @@ const (
 	UserFlag_CERTIFIED_MODERATOR     UserFlag = 1 << 18
 	UserFlag_BOT_HTTP_INTERACTIONS   UserFlag = 1 << 19
 	UserFlag_ACTIVE_DEVELOPER        UserFlag = 1 << 22
-)
-
-// user premium constants
-type UserPremium int
-
-const (
+	// user premiu
 	UserPremium_NONE          UserPremium = 0
 	UserPremium_NITRO_CLASSIC UserPremium = 1
 	UserPremium_NITRO         UserPremium = 2
 	UserPremium_NITRO_BASIC   UserPremium = 3
-)
-
-// message types
-type MessageType int
-
-const (
+	// message typ
 	MessageType_DEFAULT                                      MessageType = 0
 	MessageType_RECIPIENT_ADD                                MessageType = 1
 	MessageType_RECIPIENT_REMOVE                             MessageType = 2
@@ -181,12 +161,7 @@ const (
 	MessageType_STAGE_SPEAKER                                MessageType = 29
 	MessageType_STAGE_TOPIC                                  MessageType = 31
 	MessageType_GUILD_APPLICATION_PREMIUM_SUBSCRIPTION       MessageType = 32
-)
-
-// message flags
-type MessageFlag int
-
-const (
+	// message flag
 	MessageFlag_CROSSPOSTED                            MessageFlag = 1 << 0
 	MessageFlag_IS_CROSSPOST                           MessageFlag = 1 << 1
 	MessageFlag_SUPPRESS_EMBEDS                        MessageFlag = 1 << 2

@@ -17,7 +17,7 @@ type Client struct {
 	onGuildCreate	func(*Client, *Guild)
 	onGuildUpdate	func(*Client, *Guild, Guild)
 	onGuildDelete	func(*Client, Guild)
-	onMessageCreate func(*Client, *Message)
+	onMessageCreate	func(*Client, *Message)
 	onMessageUpdate func(*Client, *Message, Message)
 	onMessageDelete func(*Client, Message)
 }

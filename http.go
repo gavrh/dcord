@@ -10,7 +10,7 @@ import (
 )
 
 // message create
-func httpMesageCreate(c *Client, channel_id string, content string) {
+func httpMessageCreate(c *Client, channel_id string, content string) {
 
 	postBody, _ := json.Marshal(map[string]string{
 		"content": content,
@@ -20,6 +20,7 @@ func httpMesageCreate(c *Client, channel_id string, content string) {
 	if err != nil { log.Fatal(err) }
 	req.Header.Add("Authorization", fmt.Sprintf("Bot %s", c.Session.Data.Token))
 	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Accpet", "application/json")
 	println("YADA TOKEN " + c.Session.Data.Token)
 	res, err := http.DefaultClient.Do(req)
 	if err != nil { log.Fatal(err) }
