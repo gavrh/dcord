@@ -1,4 +1,12 @@
 package discord
 
 
-// client
+// client struct
+type Client struct {
+
+
+  Users     userManager
+  Channels  channelManager
+  Guilds    guildManager
+
+}

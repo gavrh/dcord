@@ -6,7 +6,6 @@ import (
   "log"
   "os"
   "os/signal"
-  "encoding/json"
 )
 
 // connection struct
@@ -21,19 +20,16 @@ type Connection struct {
 
 // dial gateway
 func dialGatway(ch chan, apiV int, token string, shard int) {
-  
   // concurrency channels
   done := make(chan bool)
-  interrupt := make(chan bool)
   interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
   // connect to gateway
   conn, _, err := websocket.Dial(fmt.Sprintf("wss://discord.gg/?v=%d&encoding=json", apiV))
   if err != nil { log.Fatal(err) }
-  // maintain gateway
+  // maintain connection 
   go maintainConn(done, conn)
-
-  // loop until done
+  // keep alive
   for {
     select {
     case<-done:
@@ -47,8 +43,7 @@ func dialGatway(ch chan, apiV int, token string, shard int) {
 }
 // maintain connection 
 func maintainConn(done chan bool, conn *websocket.Conn) {
-  defer(done)
-  
+  defer(done) 
   for {
     // get ws message
     _, message, err := conn.ReadMessage()
@@ -56,13 +51,12 @@ func maintainConn(done chan bool, conn *websocket.Conn) {
       log.Fatal(err)
       return
     }
-    // json to map object
+    // json to map
     var paylaod map[string]any
     err = json.Marshal(message, &paylaod)
     if err != nil { log.Fatal(err) }
-      
     // check opcode
-    switch payload["op"] {
+    switch payload["op"]
     // dispatch
     case opcode_DISPATCH:
     // reconnect
@@ -72,15 +66,9 @@ func maintainConn(done chan bool, conn *websocket.Conn) {
     // hello 
     case opcode_HELLO:
     // heartbeat
-    case opcode_HEARTBEAT: 
-    // heartbeat ack
+    case opcode_HEARTBEAT:
+    // heatbeat acknowledge
     case opcode_HEARTBEAT_ACK:
     
-
-    
-    }
   }
-
 }
-
-
