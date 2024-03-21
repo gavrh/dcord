@@ -1,3 +1,0 @@
-create all structs relating to discord (guild, message, roles, etc...)
-create and connect payloads to the rightful structs
-store new item pointer is managers
