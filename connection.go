@@ -4,8 +4,6 @@ import (
   "github.com/gorilla/websocket"
   "fmt"
   "log"
-  "os"
-  "os/signal"
   "encoding/json"
 )
 
@@ -20,12 +18,12 @@ type Connection struct {
 
 
 // dial gateway
-func dialGatway(ch chan bool, apiV int, token string, shard int) {
-  defer close(ch)
+func (c *Client) dialGatway(cChan chan bool, apiV int, token string, shard int) {
+  defer close(cChan) 
+
   // concurrency channels
+  fmt.Printf("Shard %d: Dialing Discord Gateway\n", shard)
   done := make(chan bool)
-  interrupt := make(chan os.Signal, 1)
-	signal.Notify(interrupt, os.Interrupt)
   // connect to gateway
   conn, _, err := websocket.DefaultDialer.Dial(fmt.Sprintf("wss://discord.gg/?v=%d&encoding=json", apiV), nil)
   if err != nil { log.Fatal(err) }
@@ -35,8 +33,6 @@ func dialGatway(ch chan bool, apiV int, token string, shard int) {
   for {
     select {
     case<-done:
-      return
-    case<-interrupt:
       return
     default:
       continue
@@ -71,7 +67,7 @@ func maintainConn(done chan bool, conn *websocket.Conn, token string, shard int)
     // check opcode
     switch payload.Opcode {
     // dispatch
-    case opcode_DISPATCH:
+   case opcode_DISPATCH:
       println(payload.Type)
       // reconnect
     case opcode_RECONNECT:
