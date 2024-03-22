@@ -1,10 +1,10 @@
 package discord
 
 import (
-  "github.com/gorilla/websocket"
-  "fmt"
-  "log"
-  "encoding/json"
+	"encoding/json"
+	"fmt"
+	"log"
+	"github.com/gorilla/websocket"
 )
 
 // connection struct
@@ -25,10 +25,13 @@ func (c *Client) dialGatway(cChan chan bool, apiV int, token string, shard int) 
   fmt.Printf("Shard %d: Dialing Discord Gateway\n", shard)
   done := make(chan bool)
   // connect to gateway
-  conn, _, err := websocket.DefaultDialer.Dial(fmt.Sprintf("wss://discord.gg/?v=%d&encoding=json", apiV), nil)
-  if err != nil { log.Fatal(err) }
+  conn, _, err := websocket.DefaultDialer.Dial(fmt.Sprintf("wss://gateway.discord.gg/?v=%d&encoding=json", apiV), nil)
+  if err != nil {
+    println("error connecting to gateway")
+    log.Fatal(err)
+  }
   // maintain connection 
-  go maintainConn(done, conn, token, shard)
+  go maintainConn(c, done, conn, token)
   // keep alive
   for {
     select {
@@ -39,16 +42,9 @@ func (c *Client) dialGatway(cChan chan bool, apiV int, token string, shard int) 
     }
   }
 }
-// temp payload struct 
-type payload struct {
-  Opcode    opcode
-  Sequence  int
-  Type      Event
-  Data      map[string]any
-}
 
 // maintain connection 
-func maintainConn(done chan bool, conn *websocket.Conn, token string, shard int) {
+func maintainConn(client *Client, done chan bool, conn *websocket.Conn, token string) {
   defer close(done)
   for {
     // get ws message
@@ -57,33 +53,13 @@ func maintainConn(done chan bool, conn *websocket.Conn, token string, shard int)
       log.Fatal(err)
       return
     }
+    println("received a message from gateway.")
     // json to map
     var payload payload
     err = json.Unmarshal(message, &payload)
     if err != nil { log.Fatal(err) }
-
-    fmt.Printf("%s", message)
-    fmt.Printf("%v", payload)
-    // check opcode
-    switch payload.Opcode {
-    // dispatch
-   case opcode_DISPATCH:
-      println(payload.Type)
-      // reconnect
-    case opcode_RECONNECT:
-      println("RECONNECT")
-    // invalid session 
-    case opcode_INVALID_SESSION:
-      println("INVALID_SESSION")
-    // hello 
-    case opcode_HELLO:
-      println("HELLO")
-    // heartbeat
-    case opcode_HEARTBEAT:
-      println("HEARTBEAT")
-    // heatbeat acknowledge
-    case opcode_HEARTBEAT_ACK:
-      println("HEARTBEAT_ACK")
-    }
+    // handle payload
+    handlePayload(client, conn, &payload, token, done)
   }
 }
+
