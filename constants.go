@@ -102,36 +102,3 @@ type Error struct {
   Description string
   reconnect   bool
 }
-const (
-  // gateway errors
-  Error_GATEWAY_UNKNOWN_ERROR           Error = { Code: 4000, Description: "Gateway Error: We're not sure what went wrong.", reconnect: true }
-  Error_GATEWAY_UNKNOWN_OPCODE          Error = { Code: 4001, Description: "Gateway Error: Invalid opcode sent.", reconnect: true }
-  Error_GATEWAY_DECODE_ERROR            Error = { Code: 4002, Description: "Gateway Error: Invalid payload sent.", reconnect: true }
-  Error_GATEWAY_NOT_AUTHORIZED          Error = { Code: 4003, Description: "Gateway Error: Payload sent before identifying.", reconnect: true }
-  Error_GATEWAY_AUTHENTICATION_FAILED   Error = { Code: 4004, Description: "Gateway Error: Token is invalid.", reconnect: false }
-  Error_GATEWAY_ALREADY_AUTHENTICATED   Error = { Code: 4005, Description: "Gateway Error: Already authenticated.", reconnect: true }
-  Error_GATEWAY_INVALID_SEQUENCE        Error = { Code: 4007, Description: "Gateway Error: Invalid sequence.", reconnect: true }
-  Error_GATEWAY_RATE_LIMITED            Error = { Code: 4008, Description: "Gateway Error: Too many payloads. Rate limited.", reconnect: true }
-  Error_GATEWAY_SESSION_TIMED_OUT       Error = { Code: 4009, Description: "Gateway Error: Session timed out.", reconnect: true }
-  Error_GATEWAY_INVALID_SHARD           Error = { Code: 4010, Description: "Gateway Error: Invalid shard.", reconnect: false }
-  Error_GATEWAY_SHARDING_REQUIRED       Error = { Code: 4011, Description: "Gateway Error: Too many guilds. Sharding required.", reconnect: false }
-  Error_GATEWAY_INVALID_API_VERSION     Error = { Code: 4012, Description: "Gateway Error: Invalid version.", reconnect: false }
-  Error_GATEWAY_INVALID_INTENTS         Error = { Code: 4013, Description: "Gateway Error: Invalid intents.", reconnect: false }
-  Error_GATEWAY_DISALLOWED_INTENTS      Error = { Code: 4014, Description: "Gateway Error: Disallowed intent.", reconnect: false }
-  // voice errors
-  Error_VOICE_UNKNOWN_OPCODE            Error = { Code: 4001, Description: "Voice Error: Invalid opcode sent." }
-  Error_VOICE_FAILED_TO_DECODE_PAYLOAD  Error = { Code: 4002, Description: "Voice Error: Invalid payload sent." }
-  Error_VOICE_NOT_AUTHORIZED            Error = { Code: 4003, Description: "Voice Error: Payload sent before identifying." }
-  Error_VOICE_AUTHENTICATION_FAILED     Error = { Code: 4004, Description: "Voice Error: Token is invalid." }
-  Error_VOICE_ALREADY_AUTHENTICATED     Error = { Code: 4005, Description: "Voice Error: Already authenticated." }
-  Error_VOICE_SESSION_NO_LONGER_VALID   Error = { Code: 4006, Description: "Voice Error: Session no longer available." }
-  Error_VOICE_SESSION_TIMEOUT           Error = { Code: 4009, Description: "Voice Error: Session timed out." }
-  Error_VOICE_SERVER_NOT_FOUND          Error = { Code: 4011, Description: "Voice Error: Server not found." }
-  Error_VOICE_UNKNOWN_PROTOCOL          Error = { Code: 4012, Description: "Voice Error: Unknown protocol." }
-  Error_VOICE_DISCONNECTED              Error = { Code: 4014, Description: "Voice Error: Session was disconnected." }
-  Error_VOICE_VOICE_SERVER_CRASHED      Error = { }
-  Error_VOICE_UNKNOWN_ENCRYPTION_MODE
-  // http errors
-  // json errors
-
-)
