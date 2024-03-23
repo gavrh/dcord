@@ -31,7 +31,7 @@ func (c *Client) dialGatway(cChan chan bool, apiV int, token string, shard int) 
     log.Fatal(err)
   }
   // maintain connection 
-  go maintainConn(c, done, conn, token)
+  go c.maintainConn(done, conn, token)
   // keep alive
   for {
     select {
@@ -43,8 +43,8 @@ func (c *Client) dialGatway(cChan chan bool, apiV int, token string, shard int) 
   }
 }
 
-// maintain connection 
-func maintainConn(client *Client, done chan bool, conn *websocket.Conn, token string) {
+// maintain connection
+func (c *Client) maintainConn(done chan bool, conn *websocket.Conn, token string) {
   defer close(done)
   for {
     // get ws message
@@ -53,13 +53,12 @@ func maintainConn(client *Client, done chan bool, conn *websocket.Conn, token st
       log.Fatal(err)
       return
     }
-    println("received a message from gateway.")
     // json to map
     var payload payload
     err = json.Unmarshal(message, &payload)
     if err != nil { log.Fatal(err) }
     // handle payload
-    handlePayload(client, conn, &payload, token, done)
+    c.handlePayload(conn, &payload, message, token, done)
   }
 }
 

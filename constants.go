@@ -43,6 +43,7 @@ const (
 // event type and constants
 type Event string
 const (
+  Event_READY                             Event = "READY"
   Event_GUILD_CREATE                      Event = "GUILD_CREATE"
   Event_GUILD_UPDATE                      Event = "GUILD_UPDATE"
   Event_GUILD_DELETE                      Event = "GUILD_DELETE"

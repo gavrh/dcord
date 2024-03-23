@@ -1,7 +1,10 @@
 package discord
 
 // client user
-type ClientUser struct {}
+type ClientUser struct {
+  Id        string 
+  Username  string 
+}
 // user struct
 type User struct {}
 // user manager

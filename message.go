@@ -5,3 +5,5 @@ type Message struct {
   Id      string
   Content string
 }
+
+// message functions
