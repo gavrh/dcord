@@ -1,7 +1,7 @@
 package discord
 
 // client user
-type ClientUser struct {
+type clientUser struct {
   Id        string 
   Username  string 
 }

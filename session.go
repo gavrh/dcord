@@ -20,5 +20,6 @@ type sessionData struct {
   IntentsArray  []Intent
   Partials      int
   Debug         bool
+  AllReady      bool
 }
 

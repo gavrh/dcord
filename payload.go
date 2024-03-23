@@ -2,7 +2,6 @@ package discord
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"runtime"
 	"time"
@@ -27,9 +26,9 @@ func (c *Client) handlePayload(conn *websocket.Conn, payload *payload, message *
     case opcode_DISPATCH:
       switch payload.Type {
         case Event_READY:
-          c.handleReady(message)
+          go c.handleReady(message)
         case Event_GUILD_CREATE:
-          c.handleGuildCreate(payload)
+          go c.handleGuildCreate(message)
 
       }
       println(payload.Type)
@@ -56,35 +55,55 @@ func (c *Client) handlePayload(conn *websocket.Conn, payload *payload, message *
 type readyData struct {
   ApiVerson             int             `json:"v"`
   UserSettings          map[string]any  `json:"user_settings"` 
-  User                  ClientUser      `json:"user"`
+  User                  clientUser      `json:"user"`
   SessionType           string          `json:"session_type"`
   SessionId             string          `json:"session_id"`
   GatewayResumeUrl      string          `json:"gateway_resume_url"`
   Relationships         []any           `json:"relationships"`
   PrivateChannels       []any           `json:"private_channels"`
   Presences             []any           `json:"presences"`
-  Guilds                []any           `json:"guils"`
+  Guilds                []any           `json:"guilds"`
   GuildJoinRequests     []any           `json:"guild_join_requests"`
   GeoOrderedRtcRegions  []any           `json:"geo_ordered_rtc_regions"`
   Auth                  map[string]any  `json:"auth"`
   Application           map[string]any  `json:"application"`
 }
+
 type readyPayload struct {
   Data  readyData `json:"d"`
 }
 func (c *Client) handleReady(message *[]byte) {
+  // parse message data
   var readyInfo readyPayload
   err := json.Unmarshal(*message, &readyInfo)
   if err != nil { log.Fatal(err) }
-  fmt.Printf("READY PAYLOAD: %v\n", readyInfo.Data)
+  // put data in its place
   c.User = &readyInfo.Data.User
+  // wait for all guilds to be cached
+  for ;; {
+    if len(c.Guilds.guilds) == len(readyInfo.Data.Guilds) { break }
+  }
   go c.cbReady(c)
+  c.session.Data.AllReady = true
 }
-func (c *Client) handleGuildCreate(payload *payload) {    
+
+type guildCreateData struct {
+  Id  string  `json:"id"`
+}
+type guildCreatePayload struct {
+  Data  guildCreateData `json:"d"`
+}
+func (c *Client) handleGuildCreate(message *[]byte) {    
   new_guild := Guild{
     Id: "NEW_GUILD_ID",
   }
-  c.Guilds.Add(new_guild.Id, &new_guild)
+
+  println(c.session.Data.AllReady)
+  if !c.session.Data.AllReady {
+    c.Guilds.Add(&new_guild)
+    return
+  }
+  c.Guilds.Add(&new_guild)
   go c.cbGuildCreate(c, &new_guild)
 }
 // reconnect payload

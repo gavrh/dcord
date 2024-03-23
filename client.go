@@ -8,10 +8,10 @@ import (
 
 // client struct
 type Client struct {
-  User      *ClientUser
-  Users     userManager
-  Channels  channelManager
-  Guilds    guildManager
+  User            *clientUser
+  Users           userManager
+  Channels        channelManager
+  Guilds          guildManager
 
   // callbacks
   cbDebug         func(*Client, string)
@@ -27,7 +27,7 @@ type Client struct {
   cbMessageDelete func(*Client, Message)
   
   // private
-  session   session
+  session         session
 }
 
 // New Client
@@ -44,6 +44,7 @@ func NewClient(intents []Intent, partials int, api_version int, shards int, debu
         Intents:    int(Intent_ALL),
         Partials:   partials,
         Debug:      debug,
+        AllReady:   false,
       },
       Shards:       shards,
     },

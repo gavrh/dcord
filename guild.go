@@ -8,6 +8,6 @@ type Guild struct {
 }
 // guild manager
 type guildManager struct { guilds map[string]*Guild }
-func (manager *guildManager) Add(guild_id string, guild *Guild) {
-  manager.guilds[guild_id] = guild
+func (manager *guildManager) Add(guild *Guild) {
+  manager.guilds[guild.Id] = guild
 }
