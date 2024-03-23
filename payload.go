@@ -19,7 +19,7 @@ type payload struct {
 }
 
 // event handler 
-func (c *Client) handlePayload(conn *websocket.Conn, payload *payload, message []byte, token string, done chan bool) {
+func (c *Client) handlePayload(conn *websocket.Conn, payload *payload, message *[]byte, token string, done chan bool) {
 
   // check opcode
   switch payload.Opcode { 
@@ -72,9 +72,9 @@ type readyData struct {
 type readyPayload struct {
   Data  readyData `json:"d"`
 }
-func (c *Client) handleReady(message []byte) {
+func (c *Client) handleReady(message *[]byte) {
   var readyInfo readyPayload
-  err := json.Unmarshal(message, &readyInfo)
+  err := json.Unmarshal(*message, &readyInfo)
   if err != nil { log.Fatal(err) }
   fmt.Printf("READY PAYLOAD: %v\n", readyInfo.Data)
   c.User = &readyInfo.Data.User

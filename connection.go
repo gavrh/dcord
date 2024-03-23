@@ -58,7 +58,7 @@ func (c *Client) maintainConn(done chan bool, conn *websocket.Conn, token string
     err = json.Unmarshal(message, &payload)
     if err != nil { log.Fatal(err) }
     // handle payload
-    c.handlePayload(conn, &payload, message, token, done)
+    c.handlePayload(conn, &payload, &message, token, done)
   }
 }
 
