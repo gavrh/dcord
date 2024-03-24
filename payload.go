@@ -2,10 +2,11 @@ package discord
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"runtime"
 	"time"
-
+  "reflect"
 	"github.com/gorilla/websocket"
 )
 
@@ -51,6 +52,7 @@ func (c *Client) handlePayload(conn *websocket.Conn, payload *payload, message *
       println("HEARTBEAT_ACK")
   }
 }
+
 // dispatch payloads
 type readyData struct {
   ApiVerson             int             `json:"v"`
@@ -69,6 +71,7 @@ type readyData struct {
   Application           map[string]any  `json:"application"`
 }
 
+// handle ready
 type readyPayload struct {
   Data  readyData `json:"d"`
 }
@@ -87,24 +90,64 @@ func (c *Client) handleReady(message *[]byte) {
   c.session.Data.AllReady = true
 }
 
-type guildCreateData struct {
-  Id  string  `json:"id"`
+// handle guild
+type guildCreateExtraData struct {
+  SafteyAlertsChannelId   string      `json:"safety_alerts_channel_id"`
+  PublicUpdatesChannelId  string      `json:"public_updates_channel_id`
+  SystemChannelId         string      `json:"system_channel_id"`
+  AfkChannelId            string      `json:"afk_channel_id"`
+  RulesChannelId          string      `json:"rules_channel_id`
+  Threads                 []*Channel  `json:"threads"`
+  Channels                []*Channel  `json:"channels"`
+}
+type guildCreateExtraPayload struct {
+  Data guildCreateExtraData `json:"d"`
 }
 type guildCreatePayload struct {
-  Data  guildCreateData `json:"d"`
+  Data Guild `json:"d"`
 }
 func (c *Client) handleGuildCreate(message *[]byte) {    
-  new_guild := Guild{
-    Id: "NEW_GUILD_ID",
-  }
 
-  println(c.session.Data.AllReady)
+  // create and unmarshal data
+  var new_guild guildCreatePayload
+  new_guild.Data.Channels = channelManager{}
+  new_guild.Data.Channels.channels = make(map[string]*Channel)
+  var new_guild_extra guildCreateExtraPayload
+  err := json.Unmarshal(*message, &new_guild)
+  println("new_guild")
+  if err != nil { log.Fatal(err) }
+  err = json.Unmarshal(*message, &new_guild_extra) 
+  println("new_guild_extra")
+  if err != nil { log.Fatal(err) }
+
+  // fill in extra data
+  for i := 0; i < len(new_guild_extra.Data.Channels); i++ {
+    fmt.Printf("%#v\n", new_guild_extra.Data.Channels[i])
+    // add to channel manager of guild and client
+    new_guild.Data.Channels.channels[new_guild_extra.Data.Channels[i].Id] = new_guild_extra.Data.Channels[i]
+    c.Channels.channels[new_guild_extra.Data.Channels[i].Id] = new_guild_extra.Data.Channels[i]
+  }
+  new_guild.Data.SafetyAlertsChannel = new_guild.Data.Channels.channels[new_guild_extra.Data.SafteyAlertsChannelId]
+  new_guild.Data.PublicUpdatesChannel = new_guild.Data.Channels.channels[new_guild_extra.Data.PublicUpdatesChannelId]
+  new_guild.Data.SystemChannel = new_guild.Data.Channels.channels[new_guild_extra.Data.SystemChannelId]
+  new_guild.Data.AfkChannel = new_guild.Data.Channels.channels[new_guild_extra.Data.AfkChannelId]
+  new_guild.Data.RulesChannel = new_guild.Data.Channels.channels[new_guild_extra.Data.RulesChannelId]
+
+  fmt.Printf("%s\n", message)
+  fmt.Printf("%#v\n", new_guild)
+  v := reflect.ValueOf(new_guild.Data)
+  for i := 0; i < v.NumField(); i++ {
+    fmt.Printf("%#v\n", v.Field(i))
+  }
+  // initial guilds havent been cached yet
   if !c.session.Data.AllReady {
-    c.Guilds.Add(&new_guild)
+    c.Guilds.Add(&new_guild.Data)
     return
   }
-  c.Guilds.Add(&new_guild)
-  go c.cbGuildCreate(c, &new_guild)
+  // cache guild
+  c.Guilds.Add(&new_guild.Data)
+  // callback
+  go c.cbGuildCreate(c, &new_guild.Data)
 }
 // reconnect payload
 // invalid session payload
