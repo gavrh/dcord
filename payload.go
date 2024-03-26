@@ -6,7 +6,6 @@ import (
 	"log"
 	"runtime"
 	"time"
-  "reflect"
 	"github.com/gorilla/websocket"
 )
 
@@ -20,6 +19,8 @@ type payload struct {
 
 // event handler 
 func (c *Client) handlePayload(conn *websocket.Conn, payload *payload, message *[]byte, token string, done chan bool) {
+
+  fmt.Printf("\n%s\n", *message)
 
   // check opcode
   switch payload.Opcode { 
@@ -122,7 +123,6 @@ func (c *Client) handleGuildCreate(message *[]byte) {
 
   // fill in extra data
   for i := 0; i < len(new_guild_extra.Data.Channels); i++ {
-    fmt.Printf("%#v\n", new_guild_extra.Data.Channels[i])
     // add to channel manager of guild and client
     new_guild.Data.Channels.channels[new_guild_extra.Data.Channels[i].Id] = new_guild_extra.Data.Channels[i]
     c.Channels.channels[new_guild_extra.Data.Channels[i].Id] = new_guild_extra.Data.Channels[i]
@@ -133,19 +133,11 @@ func (c *Client) handleGuildCreate(message *[]byte) {
   new_guild.Data.AfkChannel = new_guild.Data.Channels.channels[new_guild_extra.Data.AfkChannelId]
   new_guild.Data.RulesChannel = new_guild.Data.Channels.channels[new_guild_extra.Data.RulesChannelId]
 
-  fmt.Printf("%s\n", message)
-  fmt.Printf("%v\n", new_guild)
-  v := reflect.ValueOf(new_guild.Data)
-  for i := 0; i < v.NumField(); i++ {
-    fmt.Printf("%#v\n", v.Field(i))
-  }
   // initial guilds havent been cached yet
   if !c.session.Data.AllReady {
     c.Guilds.Add(&new_guild.Data)
     return
   }
-  // cache guild
-  c.Guilds.Add(&new_guild.Data)
   // callback
   go c.cbGuildCreate(c, &new_guild.Data)
 }
