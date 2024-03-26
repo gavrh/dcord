@@ -134,7 +134,7 @@ func (c *Client) handleGuildCreate(message *[]byte) {
   new_guild.Data.RulesChannel = new_guild.Data.Channels.channels[new_guild_extra.Data.RulesChannelId]
 
   fmt.Printf("%s\n", message)
-  fmt.Printf("%#v\n", new_guild)
+  fmt.Printf("%v\n", new_guild)
   v := reflect.ValueOf(new_guild.Data)
   for i := 0; i < v.NumField(); i++ {
     fmt.Printf("%#v\n", v.Field(i))
