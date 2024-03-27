@@ -141,6 +141,16 @@ func (c *Client) handleGuildCreate(message *[]byte) {
   // callback
   go c.cbGuildCreate(c, &new_guild.Data)
 }
+func (c *Client) handleGuildUpdate(message *[]byte) {
+  
+  updated_guild := &Guild{}
+  old_guild := Guild{}
+
+
+  // callback
+  go c.cbChannelUpdate(updated_guild, old_guild)
+}
+
 // reconnect payload
 // invalid session payload
 // samples to ge up and running
