@@ -2,8 +2,8 @@ package discord
 
 // message struct
 type Message struct {
-  Id      string
-  Content string
+    Id      string
+    Content string
 }
 
 // message functions
