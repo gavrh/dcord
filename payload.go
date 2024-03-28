@@ -124,6 +124,7 @@ func (c *Client) handleGuildCreate(message *[]byte) {
     // fill in extra data
     for i := 0; i < len(new_guild_extra.Data.Channels); i++ {
         // add to channel manager of guild and client
+        new_guild_extra.Data.Channels[i].cRef = c
         new_guild.Data.Channels.channels[new_guild_extra.Data.Channels[i].Id] = new_guild_extra.Data.Channels[i]
         c.Channels.channels[new_guild_extra.Data.Channels[i].Id] = new_guild_extra.Data.Channels[i]
     }
@@ -148,7 +149,7 @@ func (c *Client) handleGuildUpdate(message *[]byte) {
 
 
     // callback
-    go c.cbChannelUpdate(updated_guild, old_guild)
+    go c.cbGuildUpdate(c, updated_guild, old_guild)
 }
 
 // reconnect payload
