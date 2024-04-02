@@ -2,10 +2,9 @@ package discord
 
 // message struct
 type Message struct {
-    Id      string
-    Content string
-    Author  Member
-    Metions []Member
+    Id          string
+    Content     string
+    Channel     *Channel
 }
 
 // message functions

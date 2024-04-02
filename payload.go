@@ -151,6 +151,11 @@ func (c *Client) handleGuildUpdate(message *[]byte) {
     go c.cbGuildUpdate(c, updated_guild, old_guild)
 }
 
+// handle message
+func (c *Client) handleMessageCreate(message *[]byte) {
+
+}
+
 // reconnect payload
 // invalid session payload
 // samples to ge up and running
