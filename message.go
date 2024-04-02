@@ -4,6 +4,8 @@ package discord
 type Message struct {
     Id      string
     Content string
+    Author  Member
+    Metions []Member
 }
 
 // message functions
