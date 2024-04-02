@@ -94,10 +94,10 @@ func (c *Client) handleReady(message *[]byte) {
 // handle guild
 type guildCreateExtraData struct {
     SafteyAlertsChannelId   string      `json:"safety_alerts_channel_id"`
-    PublicUpdatesChannelId  string      `json:"public_updates_channel_id`
+    PublicUpdatesChannelId  string      `json:"public_updates_channel_id"`
     SystemChannelId         string      `json:"system_channel_id"`
     AfkChannelId            string      `json:"afk_channel_id"`
-    RulesChannelId          string      `json:"rules_channel_id`
+    RulesChannelId          string      `json:"rules_channel_id"`
     Threads                 []*Channel  `json:"threads"`
     Channels                []*Channel  `json:"channels"`
 }
@@ -146,7 +146,6 @@ func (c *Client) handleGuildUpdate(message *[]byte) {
 
     updated_guild := &Guild{}
     old_guild := Guild{}
-
 
     // callback
     go c.cbGuildUpdate(c, updated_guild, old_guild)
