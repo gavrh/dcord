@@ -1,6 +1,6 @@
 package discord
 
-
+// member struct
 type Member struct {
-    User User
+    User    User    `json:"user"`
 }

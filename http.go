@@ -10,7 +10,7 @@ import (
 )
 
 const (
-    DISCORD_API string = "https://discord.com/api"
+    discord_api string = "https://discord.com/api"
 )
 
 // message requests
@@ -24,7 +24,7 @@ func (c *Client) httpMessageCreate(channel_id string, message Message) {
     reqBody := strings.NewReader(string(postBody))
     // create request
     fmt.Printf("%v\n",*reqBody)
-    req, err := http.NewRequest("POST", fmt.Sprintf("https://discord.com/api/v10/channels/%s/messages", channel_id), reqBody)
+    req, err := http.NewRequest("POST", fmt.Sprintf("%s/v10/channels/%s/messages", discord_api, channel_id), reqBody)
     if err != nil { log.Fatal(err) }
     fmt.Printf("TOKEN: %s\n", c.session.Data.Token)
     // add headers

@@ -6,10 +6,10 @@ import "fmt"
 type Guild struct {
     Id                          string              `json:"id"`
     Name                        string              `json:"name"`
-    SafetyAlertsChannel         *Channel        
+    SafetyAlertsChannel         *Channel            `json:"_"`
     GuildScheduledEvents        []any               `json:"guild_scheduled_events"` // add later
-    Members                     []any               `json:"members"` // []*Member
-    Splash                      string
+    Members                     []any               `json:"_"` // []*Member
+    Splash                      string              `json:"splash"`
     MaxVideoChannelUsers        int                 `json:"max_video_channel_users"`
     MfaLevel                    int                 `json:"mfa_level"`
     VanityUrlCode               string              `json:"vanity_url_code"`
@@ -20,14 +20,14 @@ type Guild struct {
     MaxStageVideoChannelUsers   int                 `json:"max_stage_video_channel_users"`
     DiscoverySplash             string              `json:"discovery_splash"`
     LatestOnboardingQuestionId  string              `json:"latest_onboarding_question_id`
-    PublicUpdatesChannel        *Channel
+    PublicUpdatesChannel        *Channel            `json:"_"`
     SystemChannelFlags          int                 `json:"system_channel_flags"`
     InventorySettings           any                 `json:"inventory_settings"` // add later
     Presences                   []any               `json:"presences"` // add later 
     Features                    []string            `json:"features"`
     PremiumProgressBarEnabled   bool                `json:"premium_progress_bar_enabled"`
-    SystemChannel               *Channel
-    Threads                     any
+    SystemChannel               *Channel            `json:"_"`
+    Threads                     any                 `json:"_"`
     Channels                    channelManager      `json:"_"`
     PremiumSubscriptionCount    int                 `json:"premium_subscription_count"`
     DefaultMessageNotifications int                 `json:"default_message_notifications"`
@@ -35,11 +35,11 @@ type Guild struct {
     Unavailable                 bool                `json:"unavailable"`
     Banner                      string              `json:"banner"`
     VerificationLevel           int                 `json:"verification_level"`
-    Emojis                      []any  // []*Emoji
+    Emojis                      []any               `json:"_"` // []*Emoji
     MemberCount                 int                 `json:"member_count"`
     AfkTimeout                  int                 `json:"aft_timeout"`
     ExplicitContentFilter       int                 `json:"explicit_conten_filter"`
-    AfkChannel                  *Channel
+    AfkChannel                  *Channel            `json:"_"`
     SoundboardSounds            []any               `json:"soundboard_sounds"` // add later
     NsfwLevel                   int                 `json:"nsfw_level"`
     PreferredLocale             string              `json:"preferred_locale"`
@@ -50,15 +50,15 @@ type Guild struct {
     Large                       bool                `json:"large"`
     PremiumTier                 int                 `json:"premium_tier"`
     MaxMembers                  int                 `json:"max_members"`
-    Roles                       []*Role 
+    Roles                       []*Role             `json:"_"`
     JoinedAt                    string              `json:"joined_at"`
     HomeHeader                  string              `json:"home_header"`
-    Owner                       string // *Member
+    Owner                       string              `json:"_"` // *Member
     Version                     int                 `json:"version"`
     IncidentsData               any                 `json:"incidents_data"` // add later
     Clan                        any                 `json:"clan"` // add later
     Lazy                        bool                `json:"lazy"`
-    RulesChannel                *Channel
+    RulesChannel                *Channel            `json:"_"`
     StageInstances              []any               `json:"stage_instances"` // add later
     HubType                     any                 `json"hub_type"` // add later
 }

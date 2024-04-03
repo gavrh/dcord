@@ -31,6 +31,8 @@ func (c *Client) handlePayload(conn *websocket.Conn, payload *payload, message *
                     go c.handleReady(message)
                 case Event_GUILD_CREATE:
                     go c.handleGuildCreate(message)
+                case Event_MESSAGE_CREATE:
+                    go c.handleMessageCreate(message)
 
             }
             println(payload.Type)
@@ -108,17 +110,15 @@ type guildCreatePayload struct {
     Data Guild `json:"d"`
 }
 func (c *Client) handleGuildCreate(message *[]byte) {    
+    defer println("GUILD WAS CREATED")
 
     // create and unmarshal data
     var new_guild guildCreatePayload
-    new_guild.Data.Channels = channelManager{}
-    new_guild.Data.Channels.channels = make(map[string]*Channel)
+    new_guild.Data.Channels = channelManager{ channels: make(map[string]*Channel) }
     var new_guild_extra guildCreateExtraPayload
     err := json.Unmarshal(*message, &new_guild)
-    println("new_guild")
     if err != nil { log.Fatal(err) }
     err = json.Unmarshal(*message, &new_guild_extra) 
-    println("new_guild_extra")
     if err != nil { log.Fatal(err) }
 
     // fill in extra data
@@ -133,7 +133,6 @@ func (c *Client) handleGuildCreate(message *[]byte) {
     new_guild.Data.SystemChannel = new_guild.Data.Channels.channels[new_guild_extra.Data.SystemChannelId]
     new_guild.Data.AfkChannel = new_guild.Data.Channels.channels[new_guild_extra.Data.AfkChannelId]
     new_guild.Data.RulesChannel = new_guild.Data.Channels.channels[new_guild_extra.Data.RulesChannelId]
-
     // initial guilds havent been cached yet
     if !c.session.Data.AllReady {
         c.Guilds.Add(&new_guild.Data)
@@ -152,7 +151,32 @@ func (c *Client) handleGuildUpdate(message *[]byte) {
 }
 
 // handle message
+type messageCreateExtraData struct {
+    Author  struct {
+        Id  string `json:"id"`
+    }   `json:"author"`
+}
+type messageCreateExtraPayload struct {
+    Data messageCreateExtraData `json:"d"`
+}
+type messageCreatePayload struct {
+    Data Message `json:"d"`
+}
 func (c *Client) handleMessageCreate(message *[]byte) {
+
+    // create and unmarshal data
+    var new_message messageCreatePayload
+    var new_message_extra messageCreateExtraPayload
+    println("new_guild_extra")
+    err := json.Unmarshal(*message, &new_message)
+    if err != nil { log.Fatal(err) }
+    err = json.Unmarshal(*message, &new_message_extra)
+    if err != nil { log.Fatal(err) }
+
+    author := c.Users.Get(new_message_extra.Data.Author.Id)
+    fmt.Printf("AUTHOR %v\n", author)
+
+    go c.cbMessageCreate(c, &new_message.Data)
 
 }
 
