@@ -46,5 +46,5 @@ func (manager *channelManager) PrintAll() {
 }
 // channel functions
 func (channel *Channel) Send(message Message) {
-     channel.cRef.httpMessageCreate(channel.Id, message)
+     go channel.cRef.httpMessageCreate(channel.Id, message)
 }

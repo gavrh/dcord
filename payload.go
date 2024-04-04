@@ -102,6 +102,7 @@ type guildCreateExtraData struct {
     RulesChannelId          string      `json:"rules_channel_id"`
     Threads                 []*Channel  `json:"threads"`
     Channels                []*Channel  `json:"channels"`
+    Members                 []*Member   `json:"members"`
 }
 type guildCreateExtraPayload struct {
     Data guildCreateExtraData `json:"d"`
@@ -115,6 +116,7 @@ func (c *Client) handleGuildCreate(message *[]byte) {
     // create and unmarshal data
     var new_guild guildCreatePayload
     new_guild.Data.Channels = channelManager{ channels: make(map[string]*Channel) }
+    new_guild.Data.Members = memberManager{ members: make(map[string]*Member) }
     var new_guild_extra guildCreateExtraPayload
     err := json.Unmarshal(*message, &new_guild)
     if err != nil { log.Fatal(err) }
@@ -133,6 +135,11 @@ func (c *Client) handleGuildCreate(message *[]byte) {
     new_guild.Data.SystemChannel = new_guild.Data.Channels.channels[new_guild_extra.Data.SystemChannelId]
     new_guild.Data.AfkChannel = new_guild.Data.Channels.channels[new_guild_extra.Data.AfkChannelId]
     new_guild.Data.RulesChannel = new_guild.Data.Channels.channels[new_guild_extra.Data.RulesChannelId]
+    for i := 0; i < len(new_guild_extra.Data.Members); i++ {
+        // add user and member to respective managers
+        c.Users.users[new_guild_extra.Data.Members[i].User.Id] = new_guild_extra.Data.Members[i].User
+        new_guild.Data.Members.members[new_guild_extra.Data.Members[i].User.Id] = new_guild_extra.Data.Members[i]
+    }
     // initial guilds havent been cached yet
     if !c.session.Data.AllReady {
         c.Guilds.Add(&new_guild.Data)
@@ -152,9 +159,10 @@ func (c *Client) handleGuildUpdate(message *[]byte) {
 
 // handle message
 type messageCreateExtraData struct {
-    Author  struct {
-        Id  string `json:"id"`
-    }   `json:"author"`
+    Author      struct {
+                    Id  string `json:"id"`
+                } `json:"author"`
+    ChannelId   string  `json:"channel_id"` 
 }
 type messageCreateExtraPayload struct {
     Data messageCreateExtraData `json:"d"`
@@ -173,9 +181,11 @@ func (c *Client) handleMessageCreate(message *[]byte) {
     err = json.Unmarshal(*message, &new_message_extra)
     if err != nil { log.Fatal(err) }
 
-    author := c.Users.Get(new_message_extra.Data.Author.Id)
-    fmt.Printf("AUTHOR %v\n", author)
+    // fill extra data
+    new_message.Data.Author = c.Users.users[new_message_extra.Data.Author.Id]
+    new_message.Data.Channel = c.Channels.channels[new_message_extra.Data.ChannelId]
 
+    // run callback
     go c.cbMessageCreate(c, &new_message.Data)
 
 }

@@ -8,7 +8,6 @@ type Guild struct {
     Name                        string              `json:"name"`
     SafetyAlertsChannel         *Channel            `json:"_"`
     GuildScheduledEvents        []any               `json:"guild_scheduled_events"` // add later
-    Members                     []any               `json:"_"` // []*Member
     Splash                      string              `json:"splash"`
     MaxVideoChannelUsers        int                 `json:"max_video_channel_users"`
     MfaLevel                    int                 `json:"mfa_level"`
@@ -29,6 +28,7 @@ type Guild struct {
     SystemChannel               *Channel            `json:"_"`
     Threads                     any                 `json:"_"`
     Channels                    channelManager      `json:"_"`
+    Members                     memberManager       `json:"_"`
     PremiumSubscriptionCount    int                 `json:"premium_subscription_count"`
     DefaultMessageNotifications int                 `json:"default_message_notifications"`
     Description                 string              `json:"descritpion"`

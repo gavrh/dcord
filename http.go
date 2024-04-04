@@ -6,7 +6,6 @@ import (
     "encoding/json"
     "fmt"
     "log"
-    "io"
 )
 
 const (
@@ -23,20 +22,12 @@ func (c *Client) httpMessageCreate(channel_id string, message Message) {
     // convert to reader
     reqBody := strings.NewReader(string(postBody))
     // create request
-    fmt.Printf("%v\n",*reqBody)
-    req, err := http.NewRequest("POST", fmt.Sprintf("%s/v10/channels/%s/messages", discord_api, channel_id), reqBody)
-    if err != nil { log.Fatal(err) }
-    fmt.Printf("TOKEN: %s\n", c.session.Data.Token)
+    req, _ := http.NewRequest("POST", fmt.Sprintf("%s/v10/channels/%s/messages", discord_api, channel_id), reqBody)
     // add headers
     req.Header.Add("Authorization", fmt.Sprintf("Bot %s", c.session.Data.Token))
     req.Header.Add("Content-Type", "application/json")
     req.Header.Add("Accept", "application/json")
     // call request
-    res, err := http.DefaultClient.Do(req)
+    _, err := http.DefaultClient.Do(req)
     if err != nil { log.Fatal(err) }
-    
-    resBody, err := io.ReadAll(res.Body)
-	if err != nil { log.Fatal(err) }
-	fmt.Printf("%s\n", resBody)
-
 }
