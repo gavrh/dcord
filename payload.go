@@ -156,12 +156,13 @@ func (c *Client) handleGuildUpdate(message *[]byte) {
     // callback
     go c.cbGuildUpdate(c, updated_guild, old_guild)
 }
+func (c *Client) handleGuildDelete(message *[]byte) {}
 
 // handle message
 type messageCreateExtraData struct {
-    Author      struct {
-                    Id  string `json:"id"`
-                } `json:"author"`
+    Author struct {
+        Id  string `json:"id"`
+    } `json:"author"`
     ChannelId   string  `json:"channel_id"` 
 }
 type messageCreateExtraPayload struct {
@@ -187,8 +188,10 @@ func (c *Client) handleMessageCreate(message *[]byte) {
 
     // run callback
     go c.cbMessageCreate(c, &new_message.Data)
-
 }
+func (c *Client) handleMessageUpdate(message *[]byte) {}
+func (c *Client) handleMessageDelete(message *[]byte) {}
+
 
 // reconnect payload
 // invalid session payload
