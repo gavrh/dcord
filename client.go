@@ -8,26 +8,66 @@ import (
 
 // client struct
 type Client struct {
-    User            *clientUser
-    Users           userManager
-    Channels        channelManager
-    Guilds          guildManager
+    User                            *clientUser
+    Users                           userManager
+    Channels                        channelManager
+    Guilds                          guildManager
 
     // callbacks
-    cbDebug         func(*Client, string)
-    cbReady         func(*Client)
-    cbGuildCreate   func(*Client, *Guild)
-    cbGuildUpdate   func(*Client, *Guild, Guild)
-    cbGuildDelete   func(*Client, Guild)
-    cbChannelCreate func(*Client, *Channel)
-    cbChannelUpdate func(*Client, *Channel, Channel)
-    cbChannelDelete func(*Client, Channel)
-    cbMessageCreate func(*Client, *Message)
-    cbMessageUpdate func(*Client, *Message, Message)
-    cbMessageDelete func(*Client, Message)
+    cbDebug                         func(*Client, string)
+    cbReady                         func(*Client)
+    cbGuildCreate                   func(*Client, *Guild)
+    cbGuildUpdate                   func(*Client, *Guild, Guild)
+    cbGuildDelete                   func(*Client, Guild)
+    cbGuildRoleCreate               func(*Client, *Role)
+    cbGuildRoleUpdate               func(*Client, *Role, Role)
+    cbGuildRoleDelete               func(*Client, Role)
+    cbChannelCreate                 func(*Client, *Channel)
+    cbChannelUpdate                 func(*Client, *Channel, Channel)
+    cbChannelDelete                 func(*Client, Channel)
+    cbChannelPinsUpdate             func(*Client)
+    cbThreadCreate                  func(*Client)
+    cbThreadUpdate                  func(*Client)
+    cbThreadDelete                  func(*Client)
+    cbThreadMemberSync              func(*Client)
+    cbThreadMemberUpdate            func(*Client)
+    cbThreadMembersUpdate           func(*Client)
+    cbStageInstanceCreate           func(*Client)
+    cbStageInstanceUpdate           func(*Client)
+    cbStageInstanceDelete           func(*Client)
+    cbGuildMemberAdd                func(*Client)
+    cbGuildMemberUpdate             func(*Client)
+    cbGuildMemberRemove             func(*Client)
+    cbGuildAuditLogEntryCreate      func(*Client)
+    cbIntegrationCreate             func(*Client)
+    cbIntegrationUpdate             func(*Client)
+    cbIntegrationDelete             func(*Client)
+    cbWebhooksUpdate                func(*Client)
+    cbInviteCreate                  func(*Client)
+    cbInviteDelete                  func(*Client)
+    cbVoiceStateUpdate              func(*Client)
+    cbPresenceUpdate                func(*Client)
+    cbMessageCreate                 func(*Client, *Message)
+    cbMessageUpdate                 func(*Client, *Message, Message)
+    cbMessageDelete                 func(*Client, Message)
+    cbMessageDeleteBulk             func(*Client)
+    cbMessageReactionAdd            func(*Client)
+    cbMessageReactionRemove         func(*Client)
+    cbMessageReactionRemoveAll      func(*Client)
+    cbMessageReactionRemoveEmoji    func(*Client)
+    cbTypingStart                   func(*Client)
+    cbGuildScheduledEventCreate     func(*Client)
+    cbGuildScheduledEventUpdate     func(*Client)
+    cbGuildScheduledEventDelete     func(*Client)
+    cbGuildScheduledEventUserAdd    func(*Client)
+    cbGuildScheduledEventUserRemove func(*Client)
+    cbAutoModerationRuleCreate      func(*Client)
+    cbAutoModerationRuleUpdate      func(*Client)
+    cbAutoModerationRuleDelete      func(*Client)
+    cbAutoModerationActionExecution func(*Client)
 
     // private
-    session         session
+    session                         session
 }
 
 // New Client
@@ -63,8 +103,8 @@ func (c *Client) Login(token string) {
 
     // loop shards
     for i := 1; i <= c.session.Shards; i++ {
-    go c.dialGatway(c.session.Done, c.session.Data.ApiVersion, c.session.Data.Token, i)
-}
+        go c.dialGatway(c.session.Done, c.session.Data.ApiVersion, c.session.Data.Token, i)
+    }
 
     // keep alive
     for {
