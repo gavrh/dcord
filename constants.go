@@ -40,6 +40,7 @@ const (
     Intent_GUILD_MODERATION_CONFIGURATION Intent = 1<<20
     Intent_GUILD_MODERATION_EXECUTION     Intent = 1<<21
 )
+
 // event type and constants
 type Event string
 const (
@@ -93,6 +94,42 @@ const (
     Event_AUTO_MODERATION_RULE_UPDATE       Event = "AUTO_MODERATION_RULE_UPDATE"
     Event_AUTO_MODERATION_RULE_DELETE       Event = "AUTO_MODERATION_RULE_DELETE"
     Event_AUTO_MODERATION_ACTION_EXECUTION  Event = "AUTO_MODERATION_ACTION_EXECUTION"
+)
+
+// message types
+type MessageType int
+const (
+    MessageType_DEFAULT                                         MessageType = 0
+    MessageType_RECIPIENT_ADD                                   MessageType = 1
+    MessageType_RECIPIENT_REMOVE                                MessageType = 2
+    MessageType_CALL                                            MessageType = 3
+    MessageType_CHANNEL_NAME_CHANGE                             MessageType = 4
+    MessageType_CHANNEL_ICON_CHANGE                             MessageType = 5
+    MessageType_CHANNEL_PINNED_MESSAGE                          MessageType = 6
+    MessageType_USER_JOIN                                       MessageType = 7
+    MessageType_GUILD_BOOST                                     MessageType = 8
+    MessageType_GUILD_BOOST_TIER_1                              MessageType = 9
+    MessageType_GUILD_BOOST_TIER_2                              MessageType = 10
+    MessageType_GUILD_BOOST_TIER_3                              MessageType = 11
+    MessageType_CHANNEL_FOLLOW_ADD                              MessageType = 12
+    MessageType_GUILD_DISCOVERY_DISQUALIFIED                    MessageType = 14
+    MessageType_GUILD_DISCOVERY_REQUALIFIED                     MessageType = 15
+    MessageType_GUILD_DISCOVERY_GRACE_PERIOD_INITIAL_WARNING    MessageType = 16
+    MessageType_GUILD_DISCOVERY_GRACE_PERIOD_FINAL_WARNING      MessageType = 17
+    MessageType_THREAD_CREATED                                  MessageType = 18
+    MessageType_REPLY                                           MessageType = 19
+    MessageType_CHAT_INPUT_COMMAND                              MessageType = 20
+    MessageType_THREAD_STARTER_MESSAGE                          MessageType = 21
+    MessageType_GUILD_INVITE_REMINDER                           MessageType = 22
+    MessageType_CONTEXT_MENU_COMMAND                            MessageType = 23
+    MessageType_AUTO_MODERATION_ACTION                          MessageType = 24
+    MessageType_ROLE_SUBSCRIPTION_PURCHASE                      MessageType = 25
+    MessageType_INTERACTION_PREMIUM_UPSELL                      MessageType = 26
+    MessageType_STAGE_START                                     MessageType = 27
+    MessageType_STAGE_END                                       MessageType = 28
+    MessageType_STAGE_SPEAKER                                   MessageType = 29
+    MessageType_STAGE_TOPIC                                     MessageType = 31
+    MessageType_GUILD_APPLICATION_PREMIUM_SUBSCRIPTION          MessageType = 32
 )
 
 

@@ -13,7 +13,8 @@ type Client struct {
     Channels                        channelManager
     Guilds                          guildManager
 
-    // callbacks
+    session                         session
+
     cbDebug                         func(*Client, string)
     cbReady                         func(*Client)
     cbGuildCreate                   func(*Client, *Guild)
@@ -35,9 +36,9 @@ type Client struct {
     cbStageInstanceCreate           func(*Client)
     cbStageInstanceUpdate           func(*Client)
     cbStageInstanceDelete           func(*Client)
-    cbGuildMemberAdd                func(*Client)
-    cbGuildMemberUpdate             func(*Client)
-    cbGuildMemberRemove             func(*Client)
+    cbGuildMemberAdd                func(*Client, *Member)
+    cbGuildMemberUpdate             func(*Client, *Member, Member)
+    cbGuildMemberRemove             func(*Client, Member)
     cbGuildAuditLogEntryCreate      func(*Client)
     cbIntegrationCreate             func(*Client)
     cbIntegrationUpdate             func(*Client)
@@ -66,12 +67,10 @@ type Client struct {
     cbAutoModerationRuleDelete      func(*Client)
     cbAutoModerationActionExecution func(*Client)
 
-    // private
-    session                         session
 }
 
 // New Client
-func NewClient(intents []Intent, partials int, api_version int, shards int, debug bool) Client {
+func Init(intents []Intent, partials int, api_version int, shards int, debug bool) Client {
     return Client{
         Users:          userManager{users: make(map[string]*User)},
         Channels:       channelManager{channels: make(map[string]*Channel)},
@@ -127,6 +126,9 @@ func (c *Client) OnGuildDelete(cb func(client *Client, guild Guild)) { c.cbGuild
 func (c *Client) OnChannelCreate(cb func(client *Client, channel *Channel)) { c.cbChannelCreate = cb }
 func (c *Client) OnChannelUpdate(cb func(client *Client, channel *Channel, old_channel Channel)) { c.cbChannelUpdate = cb }
 func (c *Client) OnChannelDelete(cb func(client *Client, channel Channel)) { c.cbChannelDelete = cb }
+func (c *Client) OnGuildMemberAdd(cb func(client *Client, member *Member)) { c.cbGuildMemberAdd = cb }
+func (c *Client) OnGuildMemberUpdate(cb func(client *Client, member *Member, old_member Member)) { c.cbGuildMemberUpdate = cb }
+func (c *Client) OnGuildMemberDelete(cb func(client *Client, member Member)) { c.cbGuildMemberRemove = cb }
 func (c *Client) OnMessageCreate(cb func(client *Client, message *Message)) { c.cbMessageCreate = cb }
 func (c *Client) OnMessageUpdate(cb func(client *Client, message *Message, old_message Message)) { c.cbMessageUpdate = cb }
 func (c *Client) OnMessageDelete(cb func(client *Client, message Message)) { c.cbMessageDelete = cb }
