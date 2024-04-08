@@ -15,25 +15,24 @@ type Connection struct {
     SessionId   string
     Sequence    int
 }
+// connection manager
+type connectionManager struct {
+    connections map[string]Connection
+}
 
 
 // dial gateway
-func (c *Client) dialGatway(cChan chan bool, apiV int, token string, shard int) {
+func (c *Client) dialGateway(cChan chan bool, apiV int, token string, shard int) {
     defer close(cChan) 
-
-    // concurrency channels
-    fmt.Printf("Shard %d: Dialing Discord Gateway\n", shard)
-
     done := make(chan bool)
-    // connect to gateway
+    
     conn, _, err := websocket.DefaultDialer.Dial(fmt.Sprintf("wss://gateway.discord.gg/?v=%d&encoding=json", apiV), nil)
     if err != nil {
         println("error connecting to gateway")
         log.Fatal(err)
     }
-    // maintain connection 
+    
     go c.maintainConn(done, conn, token)
-    // keep alive
     for {
         select {
         case<-done:

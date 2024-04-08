@@ -2,7 +2,6 @@ package discord
 
 import (
     "encoding/json"
-	"fmt"
 	"log"
 	"runtime"
 	"time"
@@ -20,39 +19,31 @@ type payload struct {
 // event handler 
 func (c *Client) handlePayload(conn *websocket.Conn, payload *payload, message *[]byte, token string, done chan bool) {
 
-    fmt.Printf("\n%s\n", *message)
-
     // check opcode
     switch payload.Opcode { 
         // dispatch
         case opcode_DISPATCH:
             switch payload.Type {
                 case Event_READY:
-                    go c.handleReady(message)
+                    go c.handleReady(conn, message)
                 case Event_GUILD_CREATE:
                     go c.handleGuildCreate(message)
                 case Event_MESSAGE_CREATE:
                     go c.handleMessageCreate(message)
 
             }
-            println(payload.Type)
         // reconnect
         case opcode_RECONNECT:
-            println("RECONNECT")
         // invalid session
         case opcode_INVALID_SESSION:
-            println("INVALID_SESSION")
         // hello
         case opcode_HELLO:
             c.identify(conn, token)
             go heartbeat(done, conn)
-            println("HELLO")
         // heartbeat
         case opcode_HEARTBEAT:
-            println("HEARTBEAT")
         // heartbeat ack
         case opcode_HEARTBEAT_ACK:
-            println("HEARTBEAT_ACK")
     }
 }
 
@@ -78,7 +69,7 @@ type readyData struct {
 type readyPayload struct {
     Data  readyData `json:"d"`
 }
-func (c *Client) handleReady(message *[]byte) {
+func (c *Client) handleReady(conn *websocket.Conn, message *[]byte) {
     var readyInfo readyPayload
     err := json.Unmarshal(*message, &readyInfo)
     if err != nil { log.Fatal(err) }

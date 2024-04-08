@@ -102,7 +102,7 @@ func (c *Client) Login(token string) {
 
     // loop shards
     for i := 1; i <= c.session.Shards; i++ {
-        go c.dialGatway(c.session.Done, c.session.Data.ApiVersion, c.session.Data.Token, i)
+        go c.dialGateway(c.session.Done, c.session.Data.ApiVersion, c.session.Data.Token, i)
     }
 
     // keep alive

@@ -150,6 +150,16 @@ const (
     MessageType_GUILD_APPLICATION_PREMIUM_SUBSCRIPTION          MessageType = 32
 )
 
+// status type and constant
+type StatusType string
+const (
+    StatusType_ONLINE       StatusType = "online"
+    StatusType_DND          StatusType = "dnd"
+    StatusType_IDLE         StatusType = "idle"
+    StatusType_INVISIBLE    StatusType = "invisible"
+    StatusType_OFFLINE      StatusType = "offline"
+)
+
 
 
 // error code type and constants
