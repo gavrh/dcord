@@ -96,7 +96,25 @@ const (
     Event_AUTO_MODERATION_ACTION_EXECUTION  Event = "AUTO_MODERATION_ACTION_EXECUTION"
 )
 
-// message types
+// channel type and constants
+type ChannelType int 
+const (   
+    ChannelType_GUILD_TEXT          ChannelType = 0
+    ChannelType_DM                  ChannelType = 1
+    ChannelType_GUILD_VOICE         ChannelType = 2
+    ChannelType_GROUP_DM            ChannelType = 3
+    ChannelType_GUILD_CATEGORY      ChannelType = 4
+    ChannelType_GUILD_ANNOUNCEMENT  ChannelType = 5
+    ChannelType_ANNOUNCEMENT_THREAD ChannelType = 10
+    ChannelType_PUBLIC_THREAD       ChannelType = 11
+    ChannelType_PRIVATE_THREAD      ChannelType = 12
+    ChannelType_GUILD_STAGE_VOICE   ChannelType = 13
+    ChannelType_GUILD_DIRECTORY     ChannelType = 14
+    ChannelType_GUILD_FORUM         ChannelType = 15
+    ChannelType_GUILD_MEDIA         ChannelType = 16
+)
+
+// message type and constants
 type MessageType int
 const (
     MessageType_DEFAULT                                         MessageType = 0
