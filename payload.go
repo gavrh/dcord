@@ -79,13 +79,11 @@ type readyPayload struct {
     Data  readyData `json:"d"`
 }
 func (c *Client) handleReady(message *[]byte) {
-    // parse message data
     var readyInfo readyPayload
     err := json.Unmarshal(*message, &readyInfo)
     if err != nil { log.Fatal(err) }
-    // put data in its place
+    
     c.User = &readyInfo.Data.User
-    // wait for all guilds to be cached
     for ;; {
         if len(c.Guilds.guilds) == len(readyInfo.Data.Guilds) { break }
     }
@@ -111,9 +109,7 @@ type guildCreatePayload struct {
     Data Guild `json:"d"`
 }
 func (c *Client) handleGuildCreate(message *[]byte) {    
-    defer println("GUILD WAS CREATED")
-
-    // create and unmarshal data
+    
     var new_guild guildCreatePayload
     new_guild.Data.Channels = channelManager{ channels: make(map[string]*Channel) }
     new_guild.Data.Members = memberManager{ members: make(map[string]*Member) }

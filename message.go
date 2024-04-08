@@ -23,4 +23,4 @@ type Message struct {
 
 // message functions
 func (message *Message) Delete() {}
-func (message *Message) Reply() {}
+func (message *Message) Reply(msg Message) { message.Channel.cRef.httpMessageCreateReply(message, msg) }
