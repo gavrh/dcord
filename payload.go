@@ -10,15 +10,17 @@ import (
 
 // receive payload
 type payload struct {
-    Opcode    opcode          `json:"op"`
-    Sequence  int             `json:"s"`
-    Type      Event           `json:"t"`
-    Data      map[string]any  `json:"d"`
+    Opcode      opcode          `json:"op"`
+    Sequence    int             `json:"s"`
+    Type        Event           `json:"t"`
+    Data        any             `json:"d"`
 }
 
 // event handler 
-func (c *Client) handlePayload(conn *websocket.Conn, payload *payload, message *[]byte, token string, done chan bool) {
+func (c *Client) handlePayload(conn *connection, payload *payload, message *[]byte, token string, done chan bool) {
 
+    // update sequence
+    conn.Sequence = payload.Sequence
     // check opcode
     switch payload.Opcode { 
         // dispatch
@@ -69,10 +71,14 @@ type readyData struct {
 type readyPayload struct {
     Data  readyData `json:"d"`
 }
-func (c *Client) handleReady(conn *websocket.Conn, message *[]byte) {
+func (c *Client) handleReady(conn *connection, message *[]byte) {
     var readyInfo readyPayload
     err := json.Unmarshal(*message, &readyInfo)
     if err != nil { log.Fatal(err) }
+
+    conn.SessionId = readyInfo.Data.SessionId
+    conn.SessionType = readyInfo.Data.SessionType
+    c.connections.connections[conn.SessionId] = conn
     
     c.User = &readyInfo.Data.User
     for ;; {
@@ -183,11 +189,11 @@ func (c *Client) handleMessageDelete(message *[]byte) {}
 // reconnect payload
 // invalid session payload
 // samples to ge up and running
-func (c *Client) identify(conn *websocket.Conn, token string) {
+func (c *Client) identify(conn *connection, token string) {
     // identify payload
-    payload, err := json.Marshal(payload{
-        Opcode: opcode_IDENTIFY,
-        Data: map[string]any{
+    identity, _ := json.Marshal(map[string]any{
+        "op": opcode_IDENTIFY,
+        "d": map[string]any{
             "token": token,
             "intents": c.session.Data.Intents,
             "properties": map[string]any{
@@ -197,22 +203,21 @@ func (c *Client) identify(conn *websocket.Conn, token string) {
             },
         },
     })
-    if err != nil { log.Fatal(err) }
-    conn.WriteMessage(websocket.TextMessage, payload)
+    conn.Socket.WriteMessage(websocket.TextMessage, identity)
 }
 
-func heartbeat(done chan bool, conn *websocket.Conn) {
+func heartbeat(done chan bool, conn *connection) {
     // heartbeat payload
     payload, err := json.Marshal(payload{Opcode:opcode_HEARTBEAT})
     if err != nil { log.Fatal(err) }
-    conn.WriteMessage(websocket.TextMessage, payload)
+    conn.Socket.WriteMessage(websocket.TextMessage, payload)
     for {
         select {
             case<-done:
                 return
             default:
                 time.Sleep(time.Second * 40)
-                conn.WriteMessage(websocket.TextMessage, payload)
+                conn.Socket.WriteMessage(websocket.TextMessage, payload)
         }
     }
 }

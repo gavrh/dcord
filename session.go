@@ -6,7 +6,7 @@ type session struct {
     Id          string
     Sequence    int
     Timestamp   int
-    Gateway     Connection
+    Gateway     connection
     Data        sessionData
     Done        chan bool
     Shards      int

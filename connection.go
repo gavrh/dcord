@@ -8,7 +8,7 @@ import (
 )
 
 // connection struct
-type Connection struct {
+type connection struct {
     Socket      *websocket.Conn
     Shard       int
     SessionType string
@@ -17,7 +17,7 @@ type Connection struct {
 }
 // connection manager
 type connectionManager struct {
-    connections map[string]Connection
+    connections map[string]*connection
 }
 
 
@@ -26,11 +26,12 @@ func (c *Client) dialGateway(cChan chan bool, apiV int, token string, shard int)
     defer close(cChan) 
     done := make(chan bool)
     
-    conn, _, err := websocket.DefaultDialer.Dial(fmt.Sprintf("wss://gateway.discord.gg/?v=%d&encoding=json", apiV), nil)
+    socket, _, err := websocket.DefaultDialer.Dial(fmt.Sprintf("wss://gateway.discord.gg/?v=%d&encoding=json", apiV), nil)
     if err != nil {
         println("error connecting to gateway")
         log.Fatal(err)
     }
+    conn := &connection{ Socket: socket}
     
     go c.maintainConn(done, conn, token)
     for {
@@ -44,11 +45,11 @@ func (c *Client) dialGateway(cChan chan bool, apiV int, token string, shard int)
 }
 
 // maintain connection
-func (c *Client) maintainConn(done chan bool, conn *websocket.Conn, token string) {
+func (c *Client) maintainConn(done chan bool, conn *connection, token string) {
     defer close(done)
     for {
         // get ws message
-        _, message, err := conn.ReadMessage()
+        _, message, err := conn.Socket.ReadMessage()
         if err != nil {
             log.Fatal(err)
             return

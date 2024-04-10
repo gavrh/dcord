@@ -14,6 +14,7 @@ type Client struct {
     Guilds                          guildManager
 
     session                         session
+    connections                     connectionManager
 
     cbDebug                         func(*Client, string)
     cbReady                         func(*Client)
@@ -84,9 +85,10 @@ func Init(intents []Intent, partials int, api_version int, shards int, debug boo
             Partials:   partials,
             Debug:      debug,
             AllReady:   false,
+            },
+            Shards:         shards,
         },
-        Shards:       shards,
-        },
+        connections:   connectionManager{connections: make(map[string]*connection)},
     }
 }
 
