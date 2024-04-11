@@ -22,18 +22,33 @@ import "github.com/grhx/disgord"
 ```
 Create a fresh Discord client enabling access to a multitude of Discord API functionalities and the ability to define callback functions for Discord events. Initiate the session by invoking the `Client.Login()` function.
 ```go
-// initialize new discord client
-client, err := discord.New(intents int, partials int, api int, shards int)
+package main
+import (
+    "fmt"
+    "github.com/grhx/disgord"
+)
 
+func handleReady(client *discord.Client) {
 
-// OnReady callback
-client.OnReady(func(){
+    // executes when client is "ready"
     fmt.Printf("%s is online...", client.User.Username)
-})
-... // other callbacks, error checks, and whatever else you want
 
-// start client session
-client.Login(token string)
+}
+
+func main() {
+        
+    // initialize discord client
+    client, err := discord.Init(intents int, partials int, api int, shards int)
+
+    // set "ready" callback
+    client.OnReady(handleReady)
+
+    ... // other callbacks, error checks, and whatever else you want
+
+    // start client session
+    client.Login(token string)
+
+}
 ```
 
 ## Documentation

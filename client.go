@@ -2,10 +2,10 @@ package discord
 
 import (
 	"encoding/json"
-	"fmt"
+    "fmt"
 	"os"
 	"os/signal"
-	"runtime"
+    "runtime"
     "time"
 
 	"github.com/gorilla/websocket"
@@ -137,13 +137,14 @@ func (c *Client) SetPresence() {
             "d": map[string]any{
                 "activities": []Activity{
                     {
-                        Name: fmt.Sprintf("My name is %s", c.User.Username),
-                        Type: 0,
+                        Name: "Privacy",
+                        Type: 5,
                         CreatedAt: int(time.Now().UnixMilli()),
                     },
+
                 },
                 "since": int(time.Now().UnixMilli()),
-                "status": "dnd",
+                "status": "idle",
                 "afk": false,
             },
         })
