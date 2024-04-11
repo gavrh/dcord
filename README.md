@@ -38,7 +38,7 @@ func handleReady(client *discord.Client) {
 func main() {
         
     // initialize discord client
-    client, err := discord.Init(
+    client, _ := discord.Init(
         intents []discord.Intent,
         partials int,
         api int,
