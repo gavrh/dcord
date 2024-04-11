@@ -19,12 +19,16 @@ type payload struct {
 // event handler 
 func (c *Client) handlePayload(conn *connection, payload *payload, message *[]byte, token string, done chan bool) {
 
+
     // update sequence
     conn.Sequence = payload.Sequence
     // check opcode
     switch payload.Opcode { 
         // dispatch
         case opcode_DISPATCH:
+        // debugging
+        println(payload.Type)
+        println(string(*message))
             switch payload.Type {
                 case Event_READY:
                     go c.handleReady(conn, message)

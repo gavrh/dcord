@@ -19,7 +19,12 @@ type connection struct {
 type connectionManager struct {
     connections map[string]*connection
 }
-
+func (manager *connectionManager) Size() int { return len(manager.connections) }
+func (manager *connectionManager) ForEach(function func(conn *connection, key string)) {
+    for key, conn := range manager.connections {
+        function(conn, key)
+    }
+}
 
 // dial gateway
 func (c *Client) dialGateway(cChan chan bool, apiV int, token string, shard int) {

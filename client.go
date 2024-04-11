@@ -1,9 +1,14 @@
 package discord
 
 import (
-    "os"
-    "os/signal"
+	"encoding/json"
+	"fmt"
+	"os"
+	"os/signal"
 	"runtime"
+    "time"
+
+	"github.com/gorilla/websocket"
 )
 
 // client struct
@@ -70,7 +75,6 @@ type Client struct {
 
 }
 
-// New Client
 func Init(intents []Intent, partials int, api_version int, shards int, debug bool) Client {
     return Client{
         Users:          userManager{users: make(map[string]*User)},
@@ -92,7 +96,6 @@ func Init(intents []Intent, partials int, api_version int, shards int, debug boo
     }
 }
 
-// Client Login
 func (c *Client) Login(token string) {
 
     // set client token
@@ -117,6 +120,36 @@ func (c *Client) Login(token string) {
         }
     }
 
+}
+
+// temp
+type Activity struct {
+    Name        string  `json:"name"`
+    Type        int     `json:"type"`
+    CreatedAt   int     `json:"created_at"`
+    // add rest later
+}
+func (c *Client) SetPresence() {
+    c.connections.ForEach(func(conn *connection, key string) {
+        fmt.Printf("%v\n", conn)
+        presence, _ := json.Marshal(map[string]any{
+            "op": opcode_PRESENCE_UPDATE,
+            "d": map[string]any{
+                "activities": []Activity{
+                    {
+                        Name: fmt.Sprintf("My name is %s", c.User.Username),
+                        Type: 0,
+                        CreatedAt: int(time.Now().UnixMilli()),
+                    },
+                },
+                "since": int(time.Now().UnixMilli()),
+                "status": "dnd",
+                "afk": false,
+            },
+        })
+        println(string(presence))
+        conn.Socket.WriteMessage(websocket.TextMessage, presence)
+    })
 }
 
 // callback intializers
