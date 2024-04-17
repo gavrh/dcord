@@ -1,2 +1,8 @@
-.env
-test
+# pkg
+/Cargo.lock
+
+# disc
+/target
+
+# env
+*.env
