@@ -1,7 +1,15 @@
 [package]
-name = "disgord"
-version = "0.1.0"
+name = "dcrs"
+version = "0.0.1"
 edition = "2021"
+authors = ["github.com/grhx"]
+
+description = "Discord API Library"
+readme = "README.md"
+license = "MIT"
+keywords = ["discord", "bot", "api"]
+
+repository = "https://github.com/grhx/dcrs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
