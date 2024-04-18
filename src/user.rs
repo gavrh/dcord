@@ -5,7 +5,7 @@ pub struct ClientUser {
 
 #[derive(Debug)]
 pub struct User {
-    id:         String,
-    username:   String,
-    persona:    String
+    pub id:         String,
+    pub username:   String,
+    pub persona:    String
 }
