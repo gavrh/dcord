@@ -30,36 +30,3 @@ pub enum ChannelFlag {
     REQUIRE_TAG                 = 1<<4,
     HIDE_MEDIA_DOWNLOAD_OPTIONS = 1<<15
 }
-
-#[derive(Debug)]
-pub struct ChannelManager<'a> {
-    pub(crate) channels: std::collections::HashMap<String, &'a mut Channel>
-}
-impl<'a> ChannelManager<'a> {
-
-    pub(crate) fn init() -> ChannelManager<'a> {
-        return ChannelManager{ channels: std::collections::HashMap::new() }
-    } 
-
-    pub fn size(&self) -> usize {
-        return self.channels.len();
-    }
-
-    pub fn add(&mut self, new_channel: &'a mut Channel) {
-        self.channels.insert(new_channel.id.clone(), new_channel);
-    }
-
-    pub fn get(&self, channel_id: &str) -> Option<&Channel> {
-        if let Some(channel) = self.channels.get(channel_id) {
-            return Some(channel);
-        }
-        return None;
-    }
-    pub fn get_mut(&mut self, channel_id: &str) -> Option<&mut Channel> {
-        if let Some(channel) = self.channels.get_mut(channel_id) {
-            return Some(channel);
-        }
-        return None;
-    }
-
-}

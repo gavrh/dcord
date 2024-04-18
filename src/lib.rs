@@ -1,17 +1,21 @@
 // dcrs - Discord API Library
+pub mod guild;
 pub mod channel;
 pub mod user;
+pub mod manager;
 
 #[derive(Debug)]
 pub struct Client<'a> {
-    pub channels: channel::ChannelManager<'a>
+    pub guilds: manager::Manager<'a, guild::Guild<'a>>,
+    pub users: manager::Manager<'a, user::User>
 }
 
 impl<'a> Client<'a> {
 
-    pub fn init() -> Client<'a> {
+    pub fn new() -> Client<'a> {
         return Client {
-            channels: channel::ChannelManager::init()
+            guilds: manager::Manager::init(),
+            users: manager::Manager::init()
         }
     }
 
