@@ -8,32 +8,34 @@ pub struct Channel {
 }
 
 #[derive(Debug)]
+#[allow(non_camel_case_types)]
 pub enum ChannelKind {
-    GuildText           = 0,
-    Dm                  = 1,
-    GuildVoice          = 2,
-    GroupDm             = 3,
-    GuildCategory       = 4,
-    GuildAnnouncement   = 5,
-    AnnouncementThread  = 10,
-    PublicThread        = 11,
-    PrivateThread       = 12,
-    GuildStageVoice     = 13,
-    GuildDirectory      = 14,
-    GuildForum          = 15,
-    GuildMedia          = 16
+    GUILD_TEXT          = 0,
+    DM                  = 1,
+    GUILD_VOICE         = 2,
+    GROUP_DM            = 3,
+    GUILD_CATEGORY      = 4,
+    GUILD_ANNOUNCEMENT  = 5,
+    ANNOUNCEMENT_THREAD = 10,
+    PUBLIC_THREAD       = 11,
+    PRIVATE_THREAD      = 12,
+    GUILD_STAGE_VOICE   = 13,
+    GUILD_DIRECTORY     = 14,
+    GUILD_FORUM         = 15,
+    GUILD_MEDIA         = 16
 }
 
 #[derive(Debug)]
+#[allow(non_camel_case_types)]
 pub enum ChannelFlag {
-    Pinned                      = 1<<1,
-    RequireTag                  = 1<<4,
-    HideMediaDownloadOptions    = 1<<15
+    PINNED                      = 1<<1,
+    REQUIRE_TAG                 = 1<<4,
+    HIDE_MEDIA_DOWNLOAD_OPTIONS = 1<<15
 }
 
 #[derive(Debug)]
 pub struct ChannelManager<'a> {
-    channels: std::collections::HashMap<String, &'a mut Channel>
+    pub(crate) channels: std::collections::HashMap<String, &'a mut Channel>
 }
 impl<'a> ChannelManager<'a> {
 
@@ -50,10 +52,16 @@ impl<'a> ChannelManager<'a> {
     }
 
     pub fn get(&self, channel_id: &str) -> Option<&Channel> {
-        match self.channels.get(channel_id) {
-            Some(channel) => return Some(channel),
-            _ => return None
+        if let Some(channel) = self.channels.get(channel_id) {
+            return Some(channel);
         }
+        return None;
+    }
+    pub fn get_mut(&mut self, channel_id: &str) -> Option<&mut Channel> {
+        if let Some(channel) = self.channels.get_mut(channel_id) {
+            return Some(channel);
+        }
+        return None;
     }
 
 }
