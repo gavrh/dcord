@@ -17,6 +17,6 @@ Harness the full potential of Discord integration effortlessly with **dcrs**.
 
 #
 
-> [!WARNING]
+> [!CAUTION]
 >
 > This library is in early stage development and is not ready for any sort of production build, most features are incomplete or missing.
