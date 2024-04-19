@@ -3,7 +3,7 @@
 > made with <3
 
 [![Version](https://img.shields.io/crates/v/dcrs?label="Crates.io"&color="orange"&logo="rust"&logoColor="orange")](https://crates.io/crates/dcrs)
-[![Docs](https://img.shields.io/badge/Docs-docs.rs-yellow?logo="docs.rs"&logoColor="yellow")]("https://docs.rs/crate/dcrs/latest")
+[![Documentation](https://img.shields.io/badge/Docs-docs-yellow?logo="docs.rs"&logoColor="yellow")]("https://docs.rs/dcrs")
 [![Downloads](https://img.shields.io/crates/d/dcrs?label="Downloads"&color="green")](https://crates.io/crates/dcrs)
 [![License](https://img.shields.io/github/license/grhx/dcrs?label="License"&color="blue")](https://en.wikipedia.org/wiki/MIT_License)
 [![Discord](https://img.shields.io/discord/81384788765712384?label="Discord%20API"&logo="discord"&logoColor="7289da"&color="7289da")](https://discord.com/invite/discord-api)
