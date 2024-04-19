@@ -3,7 +3,8 @@ pub mod guild;
 pub mod channel;
 pub mod user;
 pub mod member;
-pub mod manager;
+pub mod message;
+mod manager;
 
 /// ### Client Struct
 /// The **Client** struct is the base of the entire "operation".

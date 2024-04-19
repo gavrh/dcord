@@ -1,13 +1,17 @@
+use crate::guild;
+
 #[derive(Debug)]
-pub struct Channel {
-    pub id: String,
-    pub kind: ChannelKind,
-    pub flags: Vec<ChannelFlag>
+pub struct Channel<'a> {
+    pub id:     String,
+    pub name:   String,
+    pub guild:  &'a guild::Guild<'a>,
+    pub kind:   Kind,
+    pub flags:  Vec<Flag>
 }
 
 #[derive(Debug)]
 #[allow(non_camel_case_types)]
-pub enum ChannelKind {
+pub enum Kind {
     GUILD_TEXT          = 0,
     DM                  = 1,
     GUILD_VOICE         = 2,
@@ -25,7 +29,7 @@ pub enum ChannelKind {
 
 #[derive(Debug)]
 #[allow(non_camel_case_types)]
-pub enum ChannelFlag {
+pub enum Flag {
     PINNED                      = 1<<1,
     REQUIRE_TAG                 = 1<<4,
     HIDE_MEDIA_DOWNLOAD_OPTIONS = 1<<15
