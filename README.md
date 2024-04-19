@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/github/license/grhx/dcrs?label="License"&color="blue")](https://en.wikipedia.org/wiki/MIT_License)
 [![Discord](https://img.shields.io/discord/81384788765712384?label="Discord%20API"&logo="discord"&logoColor="7289da"&color="7289da")](https://discord.com/invite/discord-api)
 
-<img align="right" src="https://i.imgur.com/QizpY58.png" width="250" />
+<img align="right" src="https://i.imgur.com/QizpY58.png" width="300" />
 
 Introducing **dcrs**, your ultimate solution for seamless integration with the Discord chat client API. This Rust library offers blazingly fast performance and comprehensive functionality, making interaction with Discord's API effortless. Designed to empower developers with robust low-level bindings, **dcrs** provides unparalleled support for Discord's API endpoints, WebSocket interface, and voice functionality.
 
