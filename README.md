@@ -4,8 +4,10 @@
 
 [![Documentation](https://img.shields.io/badge/Docs.rs-gray?logo="docs.rs"&logoColor="yellow")](https://docs.rs/dcrs)
 [![Version](https://img.shields.io/crates/v/dcrs?label="Crates.io"&color="orange"&logo="rust"&logoColor="orange")](https://crates.io/crates/dcrs)
-[![Downloads](https://img.shields.io/crates/d/dcrs?label="Downloads"&color="green")](https://crates.io/crates/dcrs)
-[![License](https://img.shields.io/github/license/grhx/dcrs?label="License"&color="blue")](https://en.wikipedia.org/wiki/MIT_License)
+[![Downloads](https://img.shields.io/crates/d/dcrs?label="Downloads"&color="blue")](https://crates.io/crates/dcrs)
+![Size](https://img.shields.io/github/languages/code-size/grhx/dcrs?label="Size"&color="green")
+
+[![License](https://img.shields.io/github/license/grhx/dcrs?label="License"&color="AA55AA")](https://github.com/grhx/dcrs/blob/master/LICENSE)
 [![Discord](https://img.shields.io/discord/81384788765712384?label="Discord%20API"&logo="discord"&logoColor="7289da"&color="7289da")](https://discord.com/invite/discord-api)
 
 [comment]:<img align="right" src="https://i.imgur.com/QizpY58.png" width="300" />
