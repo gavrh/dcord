@@ -28,13 +28,13 @@ pub struct Guild<'a> {
     // afk_timeout
     // widget_enabled
     // widget_channel *
-    pub verification_level:                     VerificationLevel,
-    pub default_message_notifications_level:    DefaultMessageNotificationsLevel,
-    pub explicit_content_filter_level:          ExplicitContentFilterLevel,
+    pub verification_level:                     GuildVerificationLevel,
+    pub default_message_notifications_level:    GuildDefaultMessageNotificationsLevel,
+    pub explicit_content_filter_level:          GuildExplicitContentFilterLevel,
     // roles (manager)
     // emojis (manager)
-    pub features:                               Vec<Feature>,
-    pub mfa_level:                              MfaLevel,
+    pub features:                               Vec<GuildFeature>,
+    pub mfa_level:                              GuildMfaLevel,
     // application
     // system_channel *
     // system_channel_flags (might be optional)
@@ -43,16 +43,16 @@ pub struct Guild<'a> {
     // vanity_url
     // description
     // banner
-    pub premium_tier:                           PremiumTier,
+    pub premium_tier:                           GuildPremiumTier,
     // premium_subscription_count
-    pub preferred_locale:                        Locale,
+    pub preferred_locale:                       GuildLocale,
     // public_updates_channel *
     // max_video_channel_users
     // max_stage_video_channel_users
     // approximate_member_count
     // approximate_presence_count
     // welcome_screen
-    pub nsfw_level:                             NsfwLevel
+    pub nsfw_level:                             GuildNsfwLevel
     // stickers (manager)
     // premium_progress_bar_enabled
     // safety_alerts_channel *
@@ -61,7 +61,7 @@ pub struct Guild<'a> {
 
 #[derive(Debug)]
 #[allow(non_camel_case_types)]
-pub enum VerificationLevel {
+pub enum GuildVerificationLevel {
     NONE,
     LOW,
     MEDIUM,
@@ -71,14 +71,14 @@ pub enum VerificationLevel {
 
 #[derive(Debug)]
 #[allow(non_camel_case_types)]
-pub enum DefaultMessageNotificationsLevel {
+pub enum GuildDefaultMessageNotificationsLevel {
     ALL_MESSAGES,
     ONLY_MENTIONS
 }
 
 #[derive(Debug)]
 #[allow(non_camel_case_types)]
-pub enum ExplicitContentFilterLevel {
+pub enum GuildExplicitContentFilterLevel {
     DISABLED,
     MEMBERS_WITHOUT_ROLES,
     ALL_MEMBERS
@@ -86,7 +86,7 @@ pub enum ExplicitContentFilterLevel {
 
 #[derive(Debug)]
 #[allow(non_camel_case_types)]
-pub enum Feature {
+pub enum GuildFeature {
     ANIMATED_BANNER,
     ANIMATED_ICON,
     APPLICATION_COMMAND_PERMISSIONS_V2,
@@ -117,14 +117,14 @@ pub enum Feature {
 
 #[derive(Debug)]
 #[allow(non_camel_case_types)]
-pub enum MfaLevel {
+pub enum GuildMfaLevel {
     NONE,
     ELEVATED
 }
 
 #[derive(Debug)]
 #[allow(non_camel_case_types)]
-pub enum PremiumTier {
+pub enum GuildPremiumTier {
     NONE,
     TIER_1,
     TIER_2,
@@ -133,7 +133,7 @@ pub enum PremiumTier {
 
 #[derive(Debug)]
 #[allow(non_camel_case_types)]
-pub enum Locale {
+pub enum GuildLocale {
     INDONESIAN,
     DANISH,
     GERMAN,
@@ -170,7 +170,7 @@ pub enum Locale {
 
 #[derive(Debug)]
 #[allow(non_camel_case_types)]
-pub enum NsfwLevel {
+pub enum GuildNsfwLevel {
     DEFAULT,
     EXPLICIT,
     SAFE,

@@ -7,7 +7,7 @@ use crate::user;
 #[derive(Debug)]
 pub struct Channel<'a> {
     pub id:                     String,
-    pub kind:                   Kind,
+    pub kind:                   ChannelKind,
     pub guild:                  &'a guild::Guild<'a>,
     /// sorting position of the channel
     pub position:               u32,
@@ -46,7 +46,7 @@ pub struct Channel<'a> {
     /// voice region id for `GUILD_VOICE` channel
     pub rtc_region:             String,
     /// the camera `VideoQualityMode` of `GUILD_VOICE` channel
-    pub video_quality_mode:     VideoQualityMode,
+    pub video_quality_mode:     ChannelVideoQualityMode,
     
     // message_count
     // member_count
@@ -55,20 +55,20 @@ pub struct Channel<'a> {
     // default_auto_archive_duration
     // permissions
     
-    pub flags:                  Vec<Flag>,
+    pub flags:                  Vec<ChannelFlag>,
 
     // total_message_sent
     // available tags
     // applied tags
     // default_reaction_emoji
     // default_thread_rate_limit
-    pub default_sort_order:     SortOrder,
-    pub default_forum_layout:   ForumLayout
+    pub default_sort_order:     ChannelSortOrder,
+    pub default_forum_layout:   ChannelForumLayout
 }
 
 #[derive(Debug)]
 #[allow(non_camel_case_types)]
-pub enum Kind {
+pub enum ChannelKind {
     GUILD_TEXT          = 0,
     DM                  = 1,
     GUILD_VOICE         = 2,
@@ -86,14 +86,14 @@ pub enum Kind {
 
 #[derive(Debug)]
 #[allow(non_camel_case_types)]
-pub enum VideoQualityMode {
+pub enum ChannelVideoQualityMode {
     AUTO = 1,
     FULL = 2
 }
 
 #[derive(Debug)]
 #[allow(non_camel_case_types)]
-pub enum Flag {
+pub enum ChannelFlag {
     PINNED                      = 1<<1,
     REQUIRE_TAG                 = 1<<4,
     HIDE_MEDIA_DOWNLOAD_OPTIONS = 1<<15
@@ -101,14 +101,14 @@ pub enum Flag {
 
 #[derive(Debug)]
 #[allow(non_camel_case_types)]
-pub enum SortOrder {
+pub enum ChannelSortOrder {
     LATEST_ACTIVITY,
     CREATION_DATE
 }
 
 #[derive(Debug)]
 #[allow(non_camel_case_types)]
-pub enum ForumLayout {
+pub enum ChannelForumLayout {
     NOT_SET,
     LIST_VIEW,
     GALLERY_VIEW

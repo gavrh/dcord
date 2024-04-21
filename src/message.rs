@@ -5,12 +5,12 @@ pub struct Message<'a> {
     pub id:         String,
     pub content:    String,
     pub channel:    &'a channel::Channel<'a>, 
-    pub kind:       Kind
+    pub kind:       MessageKind
 }
 
 #[derive(Debug)]
 #[allow(non_camel_case_types)]
-pub enum Kind {
+pub enum MessageKind {
     DEFAULT                                         = 0,
     RECIPIENT_ADD                                   = 1,
     RECIPIENT_REMOVE                                = 2,

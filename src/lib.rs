@@ -10,7 +10,6 @@ mod manager;
 /// The **Client** struct is the base of the entire "operation".
 #[derive(Debug)]
 pub struct Client<'a> {
-    pub user:   user::ClientUser,
     pub guilds: manager::Manager<'a, guild::Guild<'a>>,
     pub users:  manager::Manager<'a, user::User>
 }
@@ -25,10 +24,6 @@ impl<'a> Client<'a> {
     /// ```
     pub fn new() -> Client<'a> {
         return Client {
-            user: user::ClientUser{
-                id: "1".into(),
-                username: "dcrs".into()
-            },
             guilds: manager::Manager::init(),
             users: manager::Manager::init()
         }
