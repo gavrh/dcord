@@ -1,9 +1,41 @@
 use crate::user;
+use crate::role;
 
 #[derive(Debug)]
 pub struct Member<'a> {
-    pub user: &'a user::User,
-    pub permissions: Vec<MemberPermission>
+    /// user this guild member represents
+    pub user:                           &'a user::User,
+    /// member's guild nickname
+    pub nickname:                       String,
+    /// member's guild avatar hash
+    pub avatar_hash:                    String,
+    /// vector of member's roles
+    pub roles:                          Vec<&'a role::Role<'a>>,
+    /// when the member joined the guild
+    pub joined_at:                      String, // timestamp
+    /// wehn the member started boosting the guild
+    pub premium_since:                  String, // timestamp
+    /// whether the member if deafened in `GUILD_VOICE` channels
+    pub deaf:                           bool,
+    /// whether the member is muted in `GUILD_VOICE` channels 
+    pub mute:                           bool,
+    /// vector of `MemberFlag`
+    pub flags:                          Vec<MemberFlag>,
+    /// whether the member has not yet passed the guild's membership screening requirements
+    pub pending:                        bool,
+    /// vector of `MemberPermission`
+    pub permissions:                    Vec<MemberPermission>,
+    /// when the member's timeout will expire will be able to communicate in the guild again
+    pub communication_disabled_until:   String // timestamp
+}
+
+#[derive(Debug)]
+#[allow(non_camel_case_types)]
+pub enum MemberFlag {
+    DID_REJOIN              = 1<<0,
+    COMPLETED_ONBOARDING    = 1<<1,
+    BYPASSES_VERIFICATION   = 1<<2,
+    STARTED_ONBOARDING      = 1<<3
 }
 
 #[derive(Debug)]

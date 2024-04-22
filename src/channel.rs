@@ -63,7 +63,18 @@ pub struct Channel<'a> {
     // default_reaction_emoji
     // default_thread_rate_limit
     pub default_sort_order:     ChannelSortOrder,
-    pub default_forum_layout:   ChannelForumLayout
+    pub default_forum_layout:   ChannelForumLayout,
+
+    // pub(crate) client_ref:      &'a crate::Client<'a>,
+}
+
+impl<'a> Channel<'a> {
+
+    pub fn send() {}
+    pub fn modify() {}
+    pub fn bulk_delete() {}
+    pub fn close() {}
+
 }
 
 #[derive(Debug)]

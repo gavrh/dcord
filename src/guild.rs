@@ -1,11 +1,14 @@
 use crate::manager;
 use crate::channel;
 use crate::member;
+use crate::role;
+use crate::emoji;
+use crate::invite;
 
 #[derive(Debug)]
 pub struct Guild<'a> {
     pub id:                                     String,
-    // name
+    pub name:                                   String,
 
     // joined_at
     // large
@@ -23,16 +26,17 @@ pub struct Guild<'a> {
     // icon_hash
     // splash
     // discovery_splash
-    // owner
-    // afk_channel *
+    pub owner:                                  &'a member::Member<'a>,
+    pub afk_channel:                            Option<&'a channel::Channel<'a>>,
     // afk_timeout
     // widget_enabled
-    // widget_channel *
+    pub widget_channel:                         Option<&'a channel::Channel<'a>>,
     pub verification_level:                     GuildVerificationLevel,
     pub default_message_notifications_level:    GuildDefaultMessageNotificationsLevel,
     pub explicit_content_filter_level:          GuildExplicitContentFilterLevel,
-    // roles (manager)
-    // emojis (manager)
+    pub roles:                                  manager::Manager<'a, role::Role<'a>>,
+    pub emojis:                                 manager::Manager<'a, emoji::Emoji<'a>>,
+    pub invites:                                manager::Manager<'a, invite::Invite<'a>>,
     pub features:                               Vec<GuildFeature>,
     pub mfa_level:                              GuildMfaLevel,
     // application

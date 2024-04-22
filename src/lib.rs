@@ -1,6 +1,9 @@
 // dcrs - Discord API Library
 pub mod guild;
 pub mod channel;
+pub mod role;
+pub mod emoji;
+pub mod invite;
 pub mod user;
 pub mod member;
 pub mod message;
