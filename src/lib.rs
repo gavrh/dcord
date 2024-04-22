@@ -8,14 +8,16 @@ pub mod user;
 pub mod member;
 pub mod message;
 pub mod event;
+pub mod gateway;
 mod manager;
 
 /// ### Client Struct
 /// The **Client** struct is the base of the entire "operation".
 #[derive(Debug)]
 pub struct Client<'a> {
+    pub user: user::ClientUser,
     pub guilds: manager::Manager<'a, guild::Guild<'a>>,
-    pub users:  manager::Manager<'a, user::User>,
+    pub users:  manager::Manager<'a, user::User>
 }
 
 impl<'a> Client<'a> {
@@ -26,42 +28,34 @@ impl<'a> Client<'a> {
     /// // example
     /// let client = dcrs::Client::new();
     /// ```
-    pub fn new() -> Client<'a> {
+    pub fn new(intents: Vec<gateway::GatewayIntent>) -> Client<'a> {
         return Client {
+            user: user::ClientUser {
+                id: "".into(),
+                username: "".into(),
+                discriminator: "".into(),
+                name: "".into(),
+                avatar_hash: "".into(),
+                banner_hash: "".into(),
+                accent_color: 0,
+                verified: false,
+                flags: vec!(),
+                premium_kind: user::UserPremiumKind::NONE,
+                avatar_decoration_hash: "".into()
+            },
             guilds: manager::Manager::init(),
             users: manager::Manager::init(),
         }
+    }
+
+    pub fn bind_handler<T>(&self, handler: T) {
+
     }
 
     pub fn login(&self, token: String) {
         println!("{token}");
     }
 
-}
-
-/// ### Gateway Intents
-#[derive(Debug)]
-#[allow(non_camel_case_types)]
-pub enum Intent {
-    GUILDS                          = 1<<0,
-    GUILD_MEMBERS                   = 1<<1,
-    GUILD_MODERATION                = 1<<2,
-    GUILD_EMOJIS_AND_STICKERS       = 1<<3,
-    GUILD_INTEGRATIONS              = 1<<4,
-    GUILD_WEBHOOKS                  = 1<<5,
-    GUILD_INVITES                   = 1<<6,
-    GUILD_VOICE_STATES              = 1<<7,
-    GUILD_PRESENCES                 = 1<<8,
-    GUILD_MESSAGES                  = 1<<9,
-    GUILD_MESSAGE_REACTIONS         = 1<<10,
-    GUILD_MESSAGE_TYPING            = 1<<11,
-    DIRECT_MESSAGES                 = 1<<12,
-    DIRECT_MESSAGE_REACTIONS        = 1<<13,
-    DIRECT_MESSAGE_TYPING           = 1<<14,
-    MESSAGE_CONTENT                 = 1<<15,
-    GUILD_SCHEDULED_EVENTS          = 1<<16,
-    AUTO_MODERATION_CONFIGURATION   = 1<<20,
-    AUTO_MODERATION_EXECUTION       = 1<<21
 }
 
 #[cfg(test)]
