@@ -7,6 +7,7 @@ pub mod invite;
 pub mod user;
 pub mod member;
 pub mod message;
+pub mod event;
 mod manager;
 
 /// ### Client Struct
@@ -14,7 +15,7 @@ mod manager;
 #[derive(Debug)]
 pub struct Client<'a> {
     pub guilds: manager::Manager<'a, guild::Guild<'a>>,
-    pub users:  manager::Manager<'a, user::User>
+    pub users:  manager::Manager<'a, user::User>,
 }
 
 impl<'a> Client<'a> {
@@ -28,13 +29,12 @@ impl<'a> Client<'a> {
     pub fn new() -> Client<'a> {
         return Client {
             guilds: manager::Manager::init(),
-            users: manager::Manager::init()
+            users: manager::Manager::init(),
         }
     }
 
-    /// #### Client.login(token)
-    pub fn login(token: String) {
-        print!("{token}\n");
+    pub fn login(&self, token: String) {
+        println!("{token}");
     }
 
 }

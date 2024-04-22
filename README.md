@@ -22,4 +22,51 @@ Harness the full potential of Discord integration effortlessly with **dcrs**.
 
 > [!CAUTION]
 >
-> This library is in early stage development and is not ready for any sort of production build, most features are incomplete or missing.
+> This library is in early stage development and is not ready for any sort of use or production build, most features are incomplete or missing.
+
+## Getting Started
+
+### With Github
+coming soon...
+
+### With Cargo
+```
+cargo add dcrs
+```
+
+### Simple Starter Code
+```rs
+use dcrs::{
+    Client,
+    event::EventHandler
+    message::Message
+}
+
+// create a handler struct and implement 'EventHandler' trait functions
+// all functions have a referenced client param to use context and cache
+struct Handler;
+impl<'a> EventHandler<'a> for Handler {
+
+    // ready event
+    // @params -> ref to client
+    fn ready(client: &'a Client<'a>) {
+        println!("{:?} is now online.", client.user.username);
+    }
+
+    // message create event
+    // @params -> ref to client, ref to message
+    fn message_create(client: &'a Client<'a>, message: &'a Message<'a>) {
+        println!("{:?}", message.content);
+    }
+
+} 
+
+fn main() {
+    // build new client
+    let client = Client::new();
+    // login and start session with client token
+    // this uses the 'dotenv' package
+    // TOKEN is stored in a '.env' file
+    client.login(dotenv::var("TOKEN").unwrap());
+}
+```
