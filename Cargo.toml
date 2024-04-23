@@ -10,5 +10,47 @@ license = "MIT"
 keywords = ["discord", "bot", "api"]
 
 repository = "https://github.com/grhx/dcrs"
+documentation = "https://docs.rs/dcrs"
 
 [dependencies]
+# Required Dependencies
+async-trait = "0.1.80"
+serde = { version = "1.0.198", features = ["derive"] }
+serde_json = "1.0.116"
+tokio = { version = "1.37.0", features = ["fs", "macros", "rt", "sync", "time", "io-util"] }
+futures = { version = "0.3.30", default-features = false, features = ["std"] }
+# Optional Dependencies
+reqwest = { version = "0.11.22", default-features = false, features = ["multipart", "stream"], optional = true }
+tokio-tungstenite = { version = "0.21.0", optional = true }
+
+[features]
+# Defaults
+default = ["default_no_backend", "rustls_backend"]
+default_native_tls = ["default_no_backend", "native_tls_backend"]
+
+# dcrs requires a backend, this picks all default features without a backend.
+default_no_backend = ["builder", "cache", "client", "gateway", "utils"]
+
+# Enabled builder structs
+# construct JSON manually at some places.
+builder = []
+# Enables the cache, which stores the data received from Discord gateway.
+# complete guild data, channels, users and more without needing HTTP requests.
+cache = []
+# Wraps the gateway and http functionality into single interface
+client = []
+# Enables gateway support, which allows bots to listen for Discord events.
+gateway = []
+# Enables dcrs utils.
+utils = []
+
+# Backends to pick from:
+# - Rustls Backends
+rustls_backend = ["reqwest/rustls-tls", "tokio-tungstenite/rustls-tls-webpki-roots"]
+
+# - Native TLS Backends
+native_tls_backend = ["reqwest/native-tls", "tokio-tungstenite/native-tls"]
+
+[package.metadata.docs.rs]
+features = ["full"]
+rustdoc-args = ["--cfg", "docsrs"]
