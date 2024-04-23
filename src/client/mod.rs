@@ -1,7 +1,5 @@
-mod data_manager;
 mod event_emitter;
 
-pub use data_manager::*;
 pub use event_emitter::EventHandler;
 
 use crate::gateway;
