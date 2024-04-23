@@ -15,7 +15,8 @@ pub enum VoiceOpcode {
     ClientDisconnect = 13
 }
 
-pub mod close_codes {
+#[allow(dead_code)]
+pub mod voice_close_codes {
     /// Invalid Voice OP Code.
     pub const INVALID_OPCODE: u16 = 4001;
     /// An invalid payload was sent.

@@ -1,5 +1,9 @@
+mod shard;
+mod voice;
 mod ws;
 
+pub use shard::*;
+pub use voice::*;
 pub use ws::*;
 
 use crate::utils::*;
@@ -28,11 +32,9 @@ pub enum GatewayOpcode {
 /// "Privileged Gateway Intents" section. You should only toggle privileged intents that your bot requires to function.
 /// 
 /// **Current Privileged Intents:**
-/// ```rs
-/// GatewayIntent::GuildMembers
-/// GatewayIntent::GuildPresences
-/// GatewayIntent::MessageContent
-/// ```
+/// - [`GatewayIntent::GuildMembers`]
+/// - [`GatewayIntent::GuildPresences`]
+/// - [`GatewayIntent::MessageContent`]
 /// 
 /// **PS:** If your app qualifies for verification, you must first [verify your app] and request access to these intents
 /// during the verification process. If your app is already verified and you need to request additional privileged
@@ -47,173 +49,133 @@ pub enum GatewayOpcode {
 pub enum GatewayIntent {
     /// Enables the following gateway events:
     /// 
-    /// ```rs
-    /// GatewayEvent::GuildCreate
-    /// GatewayEvent::GuildUpdate
-    /// GatewayEvent::GuildDelete
-    /// GatewayEvent::GuildRoleCreate
-    /// GatewayEvent::GuildRoleUpdate
-    /// GatewayEvent::GuildRoleDelete
-    /// GatewayEvent::ChannelCreate
-    /// GatewayEvent::ChannelUpdate
-    /// GatewayEvent::ChannelDelete
-    /// GatewayEvent::ChannelPinsUpdate
-    /// GatewayEvent::ThreadCreate
-    /// GatewayEvent::ThreadUpdate
-    /// GatewayEvent::ThreadDelete
-    /// GatewayEvent::ThreadListSync
-    /// GatewayEvent::ThreadMemberUpdate
-    /// GatewayEvent::ThreadMembersUpdate
-    /// GatewayEvent::StageInstanceCreate
-    /// GatewayEvent::StageInstanceUpdate
-    /// GatewayEvent::StageInstanceDelete
-    /// ```
+    /// - [`GatewayEvent::GuildCreate`]
+    /// - [`GatewayEvent::GuildUpdate`]
+    /// - [`GatewayEvent::GuildDelete`]
+    /// - [`GatewayEvent::GuildRoleCreate`]
+    /// - [`GatewayEvent::GuildRoleUpdate`]
+    /// - [`GatewayEvent::GuildRoleDelete`]
+    /// - [`GatewayEvent::ChannelCreate`]
+    /// - [`GatewayEvent::ChannelUpdate`]
+    /// - [`GatewayEvent::ChannelDelete`]
+    /// - [`GatewayEvent::ChannelPinsUpdate`]
+    /// - [`GatewayEvent::ThreadCreate`]
+    /// - [`GatewayEvent::ThreadUpdate`]
+    /// - [`GatewayEvent::ThreadDelete`]
+    /// - [`GatewayEvent::ThreadListSync`]
+    /// - [`GatewayEvent::ThreadMemberUpdate`]
+    /// - [`GatewayEvent::ThreadMembersUpdate`]
+    /// - [`GatewayEvent::StageInstanceCreate`]
+    /// - [`GatewayEvent::StageInstanceUpdate`]
+    /// - [`GatewayEvent::StageInstanceDelete`]
     Guilds = 1<<0,
     /// Enables the following gateway events:
     /// 
-    /// ```rs
-    /// GatewayEvent::GuildMemberAdd
-    /// GatewayEvent::GuildMemberUpdate
-    /// GatewayEvent::GuildMemberRemove
-    /// GatewayEvent::ThreadMembersUpdate
-    /// ```
+    /// - [`GatewayEvent::GuildMemberAdd`]
+    /// - [`GatewayEvent::GuildMemberUpdate`]
+    /// - [`GatewayEvent::GuildMemberRemove`]
+    /// - [`GatewayEvent::ThreadMembersUpdate`]
     GuildMembers = 1<<1,
     /// Enables the following gateway events:
     /// 
-    /// ```rs
-    /// GatewayEvent::GuildAuditLogEntryCreate
-    /// GatewayEvent::GuildBanAdd
-    /// GatewayEvent::GuildBanRemove
-    /// ```
+    /// - [`GatewayEvent::GuildAuditLogEntryCreate`]
+    /// - [`GatewayEvent::GuildBanAdd`]
+    /// - [`GatewayEvent::GuildBanRemove`]
     GuildModeration = 1<<2,
     /// Enables the following gateway events:
     /// 
-    /// ```rs
-    /// GatewayEvent::GuildEmojisUpdate
-    /// GatewayEvent::GuildStickersUpdate
-    /// ```
+    /// - [`GatewayEvent::GuildEmojisUpdate`]
+    /// - [`GatewayEvent::GuildStickersUpdate`]
     GuildEmojisAndStickers = 1<<3,
     /// Enables the following gateway events:
     /// 
-    /// ```rs
-    /// GatewayEvent::GuildIntegrationsUpdate
-    /// GatewayEvent::IntegrationCreate
-    /// GatewayEvent::IntegrationUpdate
-    /// GatewayEvent::IntegrationDelete
-    /// ```
+    /// - [`GatewayEvent::GuildIntegrationsUpdate`]
+    /// - [`GatewayEvent::IntegrationCreate`]
+    /// - [`GatewayEvent::IntegrationUpdate`]
+    /// - [`GatewayEvent::IntegrationDelete`]
     GuildIntegrations = 1<<4,
     /// Enables the following gateway events:
     /// 
-    /// ```rs
-    /// GatewayEvent::WebhooksUpdate
-    /// ```
+    /// - [`GatewayEvent::WebhooksUpdate`]
     GuildWebhooks = 1<<5,
     /// Enables the following gateway events:
     /// 
-    /// ```rs
-    /// GatewayEvent::InviteCreate
-    /// GatewayEvent::InviteDelete
-    /// ```
+    /// - [`GatewayEvent::InviteCreate`]
+    /// - [`GatewayEvent::InviteDelete`]
     GuildInvites = 1<<6,
     /// Enables the following gateway events:
     /// 
-    /// ```rs
-    /// GatewayEvent::VoiceStateUpdate
-    /// ```
+    /// - [`GatewayEvent::VoiceStateUpdate`]
     GuildVoiceStates = 1<<7,
     /// Enables the following gateway events:
     /// 
-    /// ```rs
-    /// GatewayEvent::PresenceUpdate
-    /// ```
+    /// - [`GatewayEvent::PresenceUpdate`]
     GuildPresences = 1<<8,
     /// Enables the following gateway events:
     /// 
-    /// ```rs
-    /// GatewayEvent::MessageCreate
-    /// GatewayEvent::MessageUpdate
-    /// GatewayEvent::MessageDelete
-    /// GatewayEvent::MessageDeleteBulk
-    /// ```
+    /// - [`GatewayEvent::MessageCreate`]
+    /// - [`GatewayEvent::MessageUpdate`]
+    /// - [`GatewayEvent::MessageDelete`]
+    /// - [`GatewayEvent::MessageDeleteBulk`]
     GuildMessages = 1<<9,
     /// Enables the following gateway events:
     /// 
-    /// ```rs
-    /// GatewayEvent::MessageReactionAdd
-    /// GatewayEvent::MessageReactionRemove
-    /// GatewayEvent::MessageReactionRemoveAll
-    /// GatewayEvent::MessageReactionRemoveEmoji
-    /// ```
+    /// - [`GatewayEvent::MessageReactionAdd`]
+    /// - [`GatewayEvent::MessageReactionRemove`]
+    /// - [`GatewayEvent::MessageReactionRemoveAll`]
+    /// - [`GatewayEvent::MessageReactionRemoveEmoji`]
     GuildMessageReactions = 1<<10,
     /// Enables the following gateway events:
     /// 
-    /// ```rs
-    /// GatewayEvent::TypingStart
-    /// ```
+    /// - [`GatewayEvent::TypingStart`]
     GuildMessageTyping = 1<<11,
     /// Enables the following gateway events:
     /// 
-    /// ```rs
-    /// GatewayEvent::MessageCreate
-    /// GatewayEvent::MessageUpdate
-    /// GatewayEvent::MessageDelete
-    /// GatewayEvent::MessageDeleteBulk
-    /// ```
+    /// - [`GatewayEvent::MessageCreate`]
+    /// - [`GatewayEvent::MessageUpdate`]
+    /// - [`GatewayEvent::MessageDelete`]
+    /// - [`GatewayEvent::MessageDeleteBulk`]
     DirectMessages = 1<<12,
     /// Enables the following gateway events:
     /// 
-    /// ```rs
-    /// GatewayEvent::MessageReactionAdd
-    /// GatewayEvent::MessageReactionRemove
-    /// GatewayEvent::MessageReactionRemoveAll
-    /// GatewayEvent::MessageReactionRemoveEmoji
-    /// ```
+    /// - [`GatewayEvent::MessageReactionAdd`]
+    /// - [`GatewayEvent::MessageReactionRemove`]
+    /// - [`GatewayEvent::MessageReactionRemoveAll`]
+    /// - [`GatewayEvent::MessageReactionRemoveEmoji`]
     DirectMessageReactions= 1<<13,
     /// Enables the following gateway events:
     /// 
-    /// ```rs
-    /// GatewayEvent::TypingStart
-    /// ```
+    /// - [`GatewayEvent::TypingStart`]
     DirectMessageTyping = 1<<14,
     /// Enables viewing contents of messages.
     MessageContent = 1<<15,
     /// Enables the following gateway events:
     /// 
-    /// ```rs
-    /// GatewayEvent::GuildScheduledEventCreate
-    /// GatewayEvent::GuildScheduledEventUpdate
-    /// GatewayEvent::GuildScheduledEventDelete
-    /// GatewayEvent::GuildScheduledEventUserAdd
-    /// GatewayEvent::GuildScheduledEventUserRemove
-    /// ```
+    /// - [`GatewayEvent::GuildScheduledEventCreate`]
+    /// - [`GatewayEvent::GuildScheduledEventUpdate`]
+    /// - [`GatewayEvent::GuildScheduledEventDelete`]
+    /// - [`GatewayEvent::GuildScheduledEventUserAdd`]
+    /// - [`GatewayEvent::GuildScheduledEventUserRemove`]
     GuildScheduledEvents = 1<<16,
     /// Enables the following gateway events:
     /// 
-    /// ```rs
-    /// GatewayEvent::AutoModerationRuleCreate
-    /// GatewayEvent::AutoModerationRuleUpdate
-    /// GatewayEvent::AutoModerationRuleDelete
-    /// ```
+    /// - [`GatewayEvent::AutoModerationRuleCreate`]
+    /// - [`GatewayEvent::AutoModerationRuleUpdate`]
+    /// - [`GatewayEvent::AutoModerationRuleDelete`]
     AutoModerationConfiguration = 1<<20,
     /// Enables the following gateway events:
     /// 
-    /// ```rs
-    /// GatewayEvent::AutoModerationActionExecution
-    /// ```
+    /// [`GatewayEvent::AutoModerationActionExecution`]
     AutoModerationExecution = 1<<21,
     /// Enables the following gateway events:
     /// 
-    /// ```rs
-    /// GatewayEvent::MessagePollVoteAdd
-    /// GatewayEvent::MessagePollVoteRemove
-    /// ```
+    /// - [`GatewayEvent::MessagePollVoteAdd`]
+    /// - [`GatewayEvent::MessagePollVoteRemove`]
     GuildMessagePolls = 1<<24,
     /// Enables the following gateway events:
     /// 
-    /// ```rs
-    /// GatewayEvent::MessagePollVoteAdd
-    /// GatewayEvent::MessagePollVoteRemove
-    /// ```
+    /// - [`GatewayEvent::MessagePollVoteAdd`]
+    /// - [`GatewayEvent::MessagePollVoteRemove`]
     DirectMessagePolls = 1<<25,
     /// Enables all gateway events.
     All = 53608447
@@ -356,7 +318,7 @@ pub enum GatewayEvent {
     MessagePollVoteRemove
 }
 
-pub mod close_codes {
+pub mod gateway_close_codes {
     /// Unknown error; try reconnecting?
     /// 
     /// Can reconnect.

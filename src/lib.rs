@@ -11,8 +11,6 @@ pub mod client;
 pub mod gateway;
 #[cfg(feature="http")]
 pub mod http;
-#[cfg(feature="voice")]
-pub mod voice;
 #[cfg(feature="utils")]
 pub mod utils;
 
@@ -44,9 +42,6 @@ pub mod any {
     #[cfg(feature="http")]
     #[doc(no_inline)]
     pub use crate::http::*;
-    #[cfg(feature="voice")]
-    #[doc(no_inline)]
-    pub use crate::voice::*;
     #[cfg(feature="utils")]
     #[doc(no_inline)]
     pub use crate::utils::*;

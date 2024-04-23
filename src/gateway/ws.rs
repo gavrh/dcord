@@ -1,4 +1,13 @@
 use crate::utils::*;
+#[cfg(feature="client")]
+use tokio::net::TcpStream;
+#[cfg(feature="client")]
+use tokio_tungstenite::{
+    MaybeTlsStream,
+    WebSocketStream,
+};
+
+pub struct WsClient(WebSocketStream<MaybeTlsStream<TcpStream>>);
 
 #[derive(Serialize)]
 #[serde(untagged)]

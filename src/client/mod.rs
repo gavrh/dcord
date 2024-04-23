@@ -2,25 +2,52 @@ mod event_emitter;
 
 pub use event_emitter::EventHandler;
 
+#[cfg(feature="cache")]
+use crate::cache::CacheSettings;
 use crate::gateway;
 use std::sync::Arc;
 use std::future::IntoFuture;
 use futures::future::BoxFuture;
 
+/// Builder implementing [`IntoFuture`] building a [`Client`] to interact with Discord.
+#[cfg(feature="gateway")]
 pub struct ClientBuilder {
-    event_handlers: Vec<Arc<dyn EventHandler>>
+    intents: Vec<gateway::GatewayIntent>,
+    event_handlers: Vec<Arc<dyn EventHandler>>,
+    #[cfg(feature="cache")]
+    cache_settings: CacheSettings,
+    verbose: bool
 }
 
+#[cfg(feature="gateway")]
 impl ClientBuilder {
 
-    fn _new() -> Self {
+    fn _new(intents: Vec<gateway::GatewayIntent>) -> Self {
         Self {
-            event_handlers: vec![]
+            intents,
+            event_handlers: vec![],
+            #[cfg(feature="cache")]
+            cache_settings: CacheSettings::default(),
+            verbose: false
         }
     }
 
-    pub fn new(_token: impl AsRef<str>, _intents: Vec<gateway::GatewayIntent>) -> Self {
-        Self::_new()
+    pub fn new(_token: impl AsRef<str>, intents: Vec<gateway::GatewayIntent>) -> Self {
+        Self::_new(intents)
+    }
+
+    /// Enables verbose mode. Descriptive logging and debugging.
+    pub fn verbose_mode(mut self) -> Self { 
+        self.verbose = true;
+
+        self
+    }
+
+    #[cfg(feature="cache")]
+    pub fn cache_settings(mut self, settings: CacheSettings) -> Self {
+        self.cache_settings = settings;
+
+        self
     }
 
     /// Adds an event handler with multiple methods for each possible event.
@@ -48,9 +75,14 @@ impl IntoFuture for ClientBuilder {
 
     fn into_future(self) -> Self::IntoFuture {
         // let event_handlers = self.event_handlers;
+        let intents = self.intents;
+        let verbose = self.verbose;
 
         Box::pin(async move {
-            let client = Client {};
+            let client = Client {
+                _intents: intents,
+                verbose
+            };
 
             Ok(client)
         })
@@ -59,7 +91,11 @@ impl IntoFuture for ClientBuilder {
 
 /// Client Struct
 #[derive(Debug)]
-pub struct Client {}
+#[cfg(feature="gateway")]
+pub struct Client {
+    _intents: Vec<gateway::GatewayIntent>,
+    verbose: bool,
+}
 
 impl Client {
 
@@ -80,8 +116,10 @@ impl Client {
     ) -> Result<(), ()> {
 
         let init = end_shard-start_shard+1;
-        println!("Initializing shard info: {} - {}/{}", start_shard, init, total_shards);
 
+        if self.verbose {
+            println!("Initializing shard info: {} - {}/{}", start_shard, init, total_shards);
+        }
         if start_shard > 0 {
             return Err(());
         }

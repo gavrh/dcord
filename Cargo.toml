@@ -29,7 +29,7 @@ default = ["default_no_backend", "rustls_backend"]
 default_native_tls = ["default_no_backend", "native_tls_backend"]
 
 # dcrs requires a backend, this picks all default features without a backend.
-default_no_backend = ["builder", "cache", "client", "gateway", "http", "voice", "utils"]
+default_no_backend = ["builder", "cache", "client", "gateway", "http", "utils"]
 
 # Enabled builder structs
 # construct JSON manually at some places.
@@ -43,8 +43,6 @@ client = []
 gateway = []
 # Enables REST api support.
 http = []
-# Enables voice server support.
-voice = []
 # Enables dcrs utils.
 utils = []
 
