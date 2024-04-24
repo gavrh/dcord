@@ -10,7 +10,7 @@ pub struct Shard {
     heartbeat_interval: Option<Duration>,
     pub started: Instant,
     pub token: String,
-    pub intents: Vec<super::GatewayIntent>
+    pub intents: super::GatewayIntents
 }
 
 impl Shard {
@@ -18,7 +18,7 @@ impl Shard {
     pub async fn new(
         ws_url: Arc<Mutex<String>>,
         token: &str,
-        intents: Vec<super::GatewayIntent>
+        intents: super::GatewayIntents
     ) -> Result<Shard, ()> {
 
         let url = ws_url.lock().await.clone();
@@ -36,6 +36,25 @@ impl Shard {
             token: token.into(),
             intents
         })
+    }
+
+
+    pub fn last_heartbeat_sent(&self) -> Option<&Instant> {
+        if let Some(lhs) = self.last_heartbeat_sent {
+            return Some(Box::leak(Box::new(lhs)))
+        } None
+    }
+
+    pub fn last_heartbeat_ack(&self) -> Option<&Instant> {
+        if let Some(lha) = self.last_heartbeat_ack {
+            return Some(Box::leak(Box::new(lha)))
+        } None
+    }
+
+    pub fn heartbeat_interval(&self) -> Option<&Duration> {
+        if let Some(hi) = self.heartbeat_interval {
+            return Some(Box::leak(Box::new(hi)));
+        } None
     }
 
 }
