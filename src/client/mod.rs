@@ -12,7 +12,7 @@ use futures::future::BoxFuture;
 /// Builder implementing [`IntoFuture`] building a [`Client`] to interact with Discord.
 #[cfg(feature="gateway")]
 pub struct ClientBuilder {
-    intents: Vec<gateway::GatewayIntent>,
+    intents: gateway::GatewayIntents,
     event_handlers: Vec<Arc<dyn EventHandler>>,
     #[cfg(feature="cache")]
     cache_settings: CacheSettings,
@@ -22,7 +22,7 @@ pub struct ClientBuilder {
 #[cfg(feature="gateway")]
 impl ClientBuilder {
 
-    fn _new(intents: Vec<gateway::GatewayIntent>) -> Self {
+    fn _new(intents: gateway::GatewayIntents) -> Self {
         Self {
             intents,
             event_handlers: vec![],
@@ -32,7 +32,7 @@ impl ClientBuilder {
         }
     }
 
-    pub fn new(_token: impl AsRef<str>, intents: Vec<gateway::GatewayIntent>) -> Self {
+    pub fn new(_token: impl AsRef<str>, intents: gateway::GatewayIntents) -> Self {
         Self::_new(intents)
     }
 
@@ -93,13 +93,13 @@ impl IntoFuture for ClientBuilder {
 #[derive(Debug)]
 #[cfg(feature="gateway")]
 pub struct Client {
-    _intents: Vec<gateway::GatewayIntent>,
+    _intents: gateway::GatewayIntents,
     verbose: bool,
 }
 
 impl Client {
 
-    pub fn builder(token: impl AsRef<str>, intents: Vec<gateway::GatewayIntent>) -> ClientBuilder {
+    pub fn builder(token: impl AsRef<str>, intents: gateway::GatewayIntents) -> ClientBuilder {
         ClientBuilder::new(token, intents)
     }
 

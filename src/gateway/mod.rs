@@ -2,6 +2,8 @@ mod shard;
 mod voice;
 mod ws;
 
+use std::borrow::BorrowMut;
+
 pub use shard::*;
 pub use voice::*;
 pub use ws::*;
@@ -21,6 +23,25 @@ pub enum GatewayOpcode {
     InvalidSession      = 9,
     Hello               = 10,
     HeartbeatAck        = 11
+}
+
+#[derive(Debug)]
+pub struct GatewayIntents(Vec<GatewayIntent>);
+
+impl GatewayIntents {
+
+    pub fn new(intents: Vec<GatewayIntent>) -> Self {
+        Self(intents)
+    }
+
+    pub fn bitwise(&self) -> u32 {
+        let mut res: u32 = 0;
+        for i in self.0.iter() {
+            res = res + i.clone() as u32;
+        }
+        res
+    }
+
 }
 
 /// [Gateway Intents] are bitwise values passed when connecting to the gateway when identifying
@@ -45,7 +66,7 @@ pub enum GatewayOpcode {
 /// [Developer Portal]: https://discord.com/developers/applications
 /// [verify your app]: https://support.discord.com/hc/en-us/articles/360040720412-Bot-Verification-and-Data-Allowlisting
 /// [contact Discord support]: https://dis.gd/support
-#[derive(Debug, Serialize)]
+#[derive(Clone, Debug, Serialize)]
 pub enum GatewayIntent {
     /// Enables the following gateway events:
     /// 

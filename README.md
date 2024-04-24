@@ -47,29 +47,18 @@ use dcrs::{
     async_trait,
     client::{
         Client,
-        EventHandler,
-        Context
+        EventHandler
     },
-    obj::Message,
-    gateway::GatewayIntent
+    gateway::{
+        GatewayIntents,
+        GatewayIntent::*
+    };
 };
 
 struct Handler;
 #[async_trait]
 impl EventHandler for Handler {
-
-    async fn ready(&self, ctx: Context) {
-        println!("{} is online...", ctx.user.name);
-    }
-
-    async fn message_create(&self, ctx: Context, msg: Message) {
-        if msg.content == "!ping" {
-            if let Err(why) = msg.channel.send(&ctx.http, "Pong!").await {
-                println!("Err sending message: {why:?}");
-            }
-        }
-    }
-
+    // coming soon...
 }
 
 #[tokio::main]
@@ -78,7 +67,7 @@ async fn main() {
     // Grab token from environment (best practice)
     let token = dotenv::var("TOKEN").unwrap():
     // Set gateway intents, which will determine events received.
-    let intents = vec![GatewayIntent::All];
+    let intents = GatewayIntents::new(vec![All]);
 
     // Create new Client
     let mut client = Client::builder(token, intents)
