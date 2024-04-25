@@ -3,8 +3,69 @@ use async_trait::async_trait;
 #[async_trait]
 #[allow(unused_variables)]
 pub trait EventHandler: Send + Sync {
-    /// Dispatched when a message is created.
-    /// 
-    /// Provides the message's data.
-    async fn message_create(&self, message: String){}
+    async fn ready(){}
+    async fn application_command_permissions_update(){}
+    async fn auto_moderation_rule_create(){}
+    async fn auto_moderation_rule_update(){}
+    async fn auto_moderation_rule_delete(){}
+    async fn auto_moderation_action_execution(){}
+    async fn channel_create(){}
+    async fn channel_update(){}
+    async fn channel_delete(){}
+    async fn channel_pins_update(){}
+    async fn thread_create(){}
+    async fn thread_update(){}
+    async fn thread_delete(){}
+    async fn thread_list_sync(){}
+    async fn thread_member_update(){}
+    async fn thread_members_update(){}
+    async fn entitlement_create(){}
+    async fn entitlement_update(){}
+    async fn entitlement_delete(){}
+    async fn guild_create(){}
+    async fn guild_update(){}
+    async fn guild_delete(){}
+    async fn guild_audit_log_entry_create(){}
+    async fn guild_ban_add(){}
+    async fn guild_ban_remove(){}
+    async fn guild_emojis_update(){}
+    async fn guild_stickers_update(){}
+    async fn guild_integrations_update(){}
+    async fn guild_member_add(){}
+    async fn guild_member_update(){}
+    async fn guild_member_remove(){}
+    async fn guild_members_chunk(){}
+    async fn guild_role_create(){}
+    async fn guild_role_update(){}
+    async fn guild_role_delete(){}
+    async fn guild_scheduled_event_create(){}
+    async fn guild_scheduled_event_update(){}
+    async fn guild_scheduled_event_delete(){}
+    async fn guild_scheduled_event_user_add(){}
+    async fn guild_scheduled_event_user_remove(){}
+    async fn integration_create(){}
+    async fn integration_update(){}
+    async fn integration_delete(){}
+    async fn interaction_create(){}
+    async fn invite_create(){}
+    async fn invite_delete(){}
+    async fn message_create(){}
+    async fn message_update(){}
+    async fn message_delete(){}
+    async fn message_delete_bulk(){}
+    async fn message_reaction_add(){}
+    async fn message_reaction_remove(){}
+    async fn message_reaction_remove_all(){}
+    async fn message_reaction_remove_emoji(){}
+    async fn presence_update(){}
+    async fn stage_instance_create(){}
+    async fn stage_instance_update(){}
+    async fn stage_instance_delete(){}
+    async fn typing_start(){}
+    async fn user_update(){}
+    async fn voice_state_update(){}
+    async fn voice_server_update(){}
+    async fn webhooks_update(){}
+    async fn message_poll_vote_add(){}
+    async fn message_poll_vote_remove(){}
 }

@@ -1,1 +1,1 @@
-pub use tokio::sync::{Mutex, RwLock};
+pub use async_trait::async_trait;

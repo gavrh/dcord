@@ -42,42 +42,4 @@ tokio = { version = "1.37.0", features = ["macros", "rt-multi-thread"] }
 ```
 
 ### Starter Code
-```rs
-use dcrs::{
-    async_trait,
-    client::{
-        Client,
-        EventHandler
-    },
-    gateway::{
-        GatewayIntents,
-        GatewayIntent::*
-    };
-};
-
-struct Handler;
-#[async_trait]
-impl EventHandler for Handler {
-    // coming soon...
-}
-
-#[tokio::main]
-async fn main() {
-
-    // Grab token from environment (best practice)
-    let token = dotenv::var("TOKEN").unwrap():
-    // Set gateway intents, which will determine events received.
-    let intents = GatewayIntents::new(vec![All]);
-
-    // Create new Client
-    let mut client = Client::builder(token, intents)
-    .event_handler(Handler) // bind event handler
-    .verbose_mode()         // verbose logging
-    .await.expect("Err creating client.");
-
-    if let Err(why) = client.start().await {
-        println!("{why:?}");
-    }
-
-}
-```
+coming soon...

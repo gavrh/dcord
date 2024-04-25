@@ -1,130 +1,108 @@
 mod event_emitter;
 
-pub use event_emitter::EventHandler;
+pub use event_emitter::*;
+use serde::Deserialize;
 
-#[cfg(feature="cache")]
-use crate::cache::CacheSettings;
-use crate::gateway;
-use std::sync::Arc;
+use crate::gateway::{
+    self, GatewayIntents, WsClient
+};
+
 use std::future::IntoFuture;
 use futures::future::BoxFuture;
 
-/// Builder implementing [`IntoFuture`] building a [`Client`] to interact with Discord.
-#[cfg(feature="gateway")]
+/// [`Client`] builder.
 pub struct ClientBuilder {
-    intents: gateway::GatewayIntents,
-    event_handlers: Vec<Arc<dyn EventHandler>>,
-    #[cfg(feature="cache")]
-    cache_settings: CacheSettings,
-    verbose: bool
+    intents: GatewayIntents,
+    token: String,
 }
-
-#[cfg(feature="gateway")]
 impl ClientBuilder {
 
-    fn _new(intents: gateway::GatewayIntents) -> Self {
+    pub(crate) fn _new(token: String, intents: GatewayIntents) -> Self {
         Self {
             intents,
-            event_handlers: vec![],
-            #[cfg(feature="cache")]
-            cache_settings: CacheSettings::default(),
-            verbose: false
+            token
         }
     }
 
-    pub fn new(_token: impl AsRef<str>, intents: gateway::GatewayIntents) -> Self {
-        Self::_new(intents)
-    }
-
-    /// Enables verbose mode. Descriptive logging and debugging.
-    pub fn verbose_mode(mut self) -> Self { 
-        self.verbose = true;
-
-        self
-    }
-
-    #[cfg(feature="cache")]
-    pub fn cache_settings(mut self, settings: CacheSettings) -> Self {
-        self.cache_settings = settings;
-
-        self
-    }
-
-    /// Adds an event handler with multiple methods for each possible event.
-    pub fn event_handler<H: EventHandler + 'static>(mut self, event_handler: H) -> Self {
-        self.event_handlers.push(Arc::new(event_handler));
-
-        self
-    }
-
-    /// Adds an event handler with multiple methods for each possible event.
-    /// 
-    /// Passed by Arc.
-    pub fn event_handler_arc<H: EventHandler + 'static>(mut self, event_handler_arc: Arc<H>) -> Self {
-        self.event_handlers.push(event_handler_arc);
-
-        self
+    pub fn new(token: impl AsRef<str>, intents: GatewayIntents) -> Self {
+        Self::_new(token.as_ref().to_string(), intents)
     }
 
 }
-
-#[cfg(feature="gateway")]
 impl IntoFuture for ClientBuilder {
+    
     type Output = Result<Client, ()>;
     type IntoFuture = BoxFuture<'static, Result<Client, ()>>;
 
     fn into_future(self) -> Self::IntoFuture {
-        // let event_handlers = self.event_handlers;
+
+        // client fields
         let intents = self.intents;
-        let verbose = self.verbose;
+        let token = self.token;
 
         Box::pin(async move {
+
             let client = Client {
-                _intents: intents,
-                verbose
+                intents,
+                token,
+                connection: None,
             };
 
             Ok(client)
+
         })
+
     }
+
 }
 
-/// Client Struct
+/// Client
 #[derive(Debug)]
-#[cfg(feature="gateway")]
+#[allow(dead_code)]
 pub struct Client {
-    _intents: gateway::GatewayIntents,
-    verbose: bool,
+    intents: GatewayIntents,
+    token: String,
+    connection: Option<WsClient>
 }
-
 impl Client {
 
-    pub fn builder(token: impl AsRef<str>, intents: gateway::GatewayIntents) -> ClientBuilder {
+    pub fn builder(token: impl AsRef<str>, intents: GatewayIntents) -> ClientBuilder {
         ClientBuilder::new(token, intents)
     }
 
+    pub async fn login(&mut self) -> Result<(), ()> {
 
-    pub async fn start(&mut self) -> Result<(), ()> {
-        self.start_connection(0, 0, 1).await
-    }
+        self.connection = Some(WsClient::connect("wss://gateway.discord.gg").await);
+        
+        let msg = serde_json::json!({
+            "op": 2,
+            "d": {
+                "token": self.token,
+                "intents": self.intents.bitwise(),
+                "properties": {
+                    "os": std::env::consts::OS,
+                    "browser": crate::constants::USER_AGENT,
+                    "device": "github.com/grhx/dcrs"
+                },
+            }
+        });
 
-    async fn start_connection(
-        &mut self,
-        start_shard: u32,
-        end_shard: u32,
-        total_shards: u32,
-    ) -> Result<(), ()> {
+        let _ = self.connection.as_mut().unwrap().write(tokio_tungstenite::tungstenite::Message::Text(msg.to_string())).await;       
 
-        let init = end_shard-start_shard+1;
-
-        if self.verbose {
-            println!("Initializing shard info: {} - {}/{}", start_shard, init, total_shards);
+        loop {
+            match self.connection.as_mut().unwrap().read().await {
+                Some(message) => {
+                    tokio::spawn(async move {
+                        println!("{:#?}", message);
+                    });
+                    println!("1")
+                },
+                _ => {
+                    return Ok(());
+                }
+            }
         }
-        if start_shard > 0 {
-            return Err(());
-        }
 
-        Ok(())
     }
 
 }
