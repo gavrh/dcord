@@ -1,7 +1,6 @@
 mod event_emitter;
 
 pub use event_emitter::*;
-use serde::Deserialize;
 
 use crate::gateway::{
     self, GatewayIntents, WsClient
@@ -75,7 +74,7 @@ impl Client {
         self.connection = Some(WsClient::connect("wss://gateway.discord.gg").await);
         
         let msg = serde_json::json!({
-            "op": 2,
+            "op": gateway::GatewayOpcode::Identify,
             "d": {
                 "token": self.token,
                 "intents": self.intents.bitwise(),
@@ -86,6 +85,8 @@ impl Client {
                 },
             }
         });
+
+        println!("{:#?}", msg);
 
         let _ = self.connection.as_mut().unwrap().write(tokio_tungstenite::tungstenite::Message::Text(msg.to_string())).await;       
 
@@ -98,7 +99,6 @@ impl Client {
                         if rec_payload.is_err() { return; }
                         println!("{:#?}", rec_payload.ok().unwrap());
                     });
-                    println!("1")
                 },
                 _ => {
                     return Ok(());

@@ -4,7 +4,8 @@ pub use ws::*;
 
 use crate::utils::*;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize_repr, Deserialize_repr)]
+#[repr(i8)]
 pub enum GatewayOpcode {
     Dispatch            = 0,
     Heartbeat           = 1,
@@ -31,7 +32,7 @@ impl GatewayIntents {
     pub fn bitwise(&self) -> u32 {
         let mut res: u32 = 0;
         for i in self.0.iter() {
-            res = res + i.clone() as u32;
+            res = res | i.clone() as u32;
         }
         res
     }
@@ -62,6 +63,8 @@ impl GatewayIntents {
 /// [contact Discord support]: https://dis.gd/support
 #[derive(Clone, Debug, Serialize)]
 pub enum GatewayIntent {
+    /// Enables all gateway events.
+    All = 53608447,
     /// Enables the following gateway events:
     /// 
     /// - [`GatewayEvent::GuildCreate`]
@@ -191,9 +194,7 @@ pub enum GatewayIntent {
     /// 
     /// - [`GatewayEvent::MessagePollVoteAdd`]
     /// - [`GatewayEvent::MessagePollVoteRemove`]
-    DirectMessagePolls = 1<<25,
-    /// Enables all gateway events.
-    All = 53608447
+    DirectMessagePolls = 1<<25
 }
 
 /// [Gateway Events] are received and encapsulated in an event payload, and are sent by Discord

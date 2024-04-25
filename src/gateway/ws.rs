@@ -1,3 +1,4 @@
+use super::*;
 use crate::utils::*;
 
 use tokio_tungstenite::{
@@ -56,7 +57,7 @@ enum WsRecData {
 #[derive(Debug, Deserialize)]
 #[allow(dead_code)]
 pub struct WsRecPayload {
-    op: u16,
+    op: GatewayOpcode,
     s: Option<u64>,
-    t: Option<super::GatewayEvent>,
+    t: Option<GatewayEvent>,
 }
