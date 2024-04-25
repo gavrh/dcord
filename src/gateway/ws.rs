@@ -48,10 +48,15 @@ enum WsWriteData {
     Heartbeat(Option<u64>)
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Deserialize)]
+#[allow(dead_code)]
+enum WsRecData {
+}
+
+#[derive(Debug, Deserialize)]
+#[allow(dead_code)]
 pub struct WsRecPayload {
     op: u16,
     s: Option<u64>,
-    t: Option<String>,
-    d: String
+    t: Option<super::GatewayEvent>,
 }

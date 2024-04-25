@@ -201,7 +201,8 @@ pub enum GatewayIntent {
 /// Discord server where the app is installed.
 /// 
 /// [Gateway Events]: https://discord.com/developers/docs/topics/gateway-events#receive-events
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum GatewayEvent {
     /// Application command permission was updated.
     ApplicationCommandPermissionsUpdate,

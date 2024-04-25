@@ -93,7 +93,10 @@ impl Client {
             match self.connection.as_mut().unwrap().read().await {
                 Some(message) => {
                     tokio::spawn(async move {
-                        println!("{:#?}", message);
+                        let rec_payload = 
+                            serde_json::from_str::<gateway::WsRecPayload>(message.into_text().unwrap().as_str());
+                        if rec_payload.is_err() { return; }
+                        println!("{:#?}", rec_payload.ok().unwrap());
                     });
                     println!("1")
                 },
