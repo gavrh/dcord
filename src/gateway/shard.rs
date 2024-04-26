@@ -24,8 +24,8 @@ impl Shard {
         if let Ok(client) = WsClient::connect("wss://gateway.discord.gg/").await {
             return Ok(Self {
                 client,
-                last_heartbeat_sent: Some(Instant::now()),
-                last_heartbeat_ack: Some(Instant::now()),
+                last_heartbeat_sent: None,
+                last_heartbeat_ack: None,
                 last_heartbeat_acknowledged: true,
                 heartbeat_interval: Some(Duration::from_millis(40000)),
                 seq: 0,
@@ -40,13 +40,21 @@ impl Shard {
 
     pub async fn handle_heartbeat(&mut self) -> Result<(), ()> {
             
-        if Instant::now().duration_since(self.last_heartbeat_ack.unwrap_or(Instant::now())) <= self.heartbeat_interval.unwrap() 
-        && self.last_heartbeat_acknowledged {
+        let Some(heartbeat_interval) = self.heartbeat_interval else {
             return Err(())
-        }
+        };
 
-        println!("SENDING HEARTBEAT");
+        if let Some(last_sent) = self.last_heartbeat_sent {
+            if last_sent.elapsed() <= heartbeat_interval {
+                return Err(())
+            }
+        };
 
+        if !self.last_heartbeat_acknowledged {
+            return Err(())
+        };
+
+        // heartbeat
         let heartbeat_payload = serde_json::json!({
             "op": GatewayOpcode::Heartbeat,
             "d": ""
@@ -92,6 +100,7 @@ impl Shard {
                 Some(message) => {
                     
                     if message.is_close() { break }
+                    println!("{message:#?}");
                     let payload = serde_json::from_str::<WsRecPayload>(message.into_text().unwrap().as_str())
                     .unwrap_or_else(|err| { panic!("{err:?}"); });
 
