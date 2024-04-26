@@ -1,11 +1,14 @@
 mod event_emitter;
 
 pub use event_emitter::*;
+use futures::FutureExt;
 
+use crate::utils::*;
 use crate::gateway::{
     self, GatewayIntents, WsClient
 };
 
+use std::borrow::BorrowMut;
 use std::future::IntoFuture;
 use futures::future::BoxFuture;
 
@@ -61,7 +64,7 @@ impl IntoFuture for ClientBuilder {
 pub struct Client {
     intents: GatewayIntents,
     token: String,
-    connection: Option<WsClient>
+    connection: Option<Arc<Mutex<WsClient>>>
 }
 impl Client {
 
@@ -71,7 +74,9 @@ impl Client {
 
     pub async fn login(&mut self) -> Result<(), ()> {
 
-        self.connection = Some(WsClient::connect("wss://gateway.discord.gg").await);
+        self.connection = Some(Arc::new(Mutex::new(WsClient::connect("wss://gateway.discord.gg").await.unwrap_or_else(|err| {
+            panic!("{err:?}")
+        }))));
         
         let msg = serde_json::json!({
             "op": gateway::GatewayOpcode::Identify,
@@ -86,24 +91,45 @@ impl Client {
             }
         });
 
-        println!("{:#?}", msg);
 
-        let _ = self.connection.as_mut().unwrap().write(tokio_tungstenite::tungstenite::Message::Text(msg.to_string())).await;       
+        let _ = self.connection.as_ref().unwrap().lock().await.write(tokio_tungstenite::tungstenite::Message::Text(msg.to_string())).await;
+
+        let conn = Arc::clone(&self.connection.as_ref().unwrap());
+
+        tokio::spawn(async move {
+            let heartbeat = serde_json::json!({
+                "op": gateway::GatewayOpcode::Heartbeat, 
+                "d": {}
+            });
+            loop {
+                std::thread::sleep(tokio::time::Duration::from_millis(45000));
+                let mut conn = conn.lock().await;
+                println!("HERE FOR HEARTBEAT");
+                if let Err(()) = conn.write(tokio_tungstenite::tungstenite::Message::Text(heartbeat.to_string())).await {
+                    println!("ERROR");
+                    return;
+                } else {
+                    println!("HEARTBEAT");
+                }
+                drop(conn);
+            }
+        });
 
         loop {
-            match self.connection.as_mut().unwrap().read().await {
+            let con = Arc::clone(&self.connection.as_ref().unwrap());
+            let mut con = con.lock().await;
+            match con.read() {
                 Some(message) => {
-                    tokio::spawn(async move {
+                    tokio::spawn(async {
                         let rec_payload = 
                             serde_json::from_str::<gateway::WsRecPayload>(message.into_text().unwrap().as_str());
-                        if rec_payload.is_err() { return; }
+                        if rec_payload.is_err() { return }
                         println!("{:#?}", rec_payload.ok().unwrap());
                     });
                 },
-                _ => {
-                    return Ok(());
-                }
+                _ => {}
             }
+            drop(con);
         }
 
     }

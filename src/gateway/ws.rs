@@ -1,3 +1,5 @@
+use std::future::IntoFuture;
+
 use super::*;
 use crate::utils::*;
 
@@ -9,8 +11,7 @@ use tokio_tungstenite::{
 };
 use tokio::net::TcpStream;
 use futures::{
-    SinkExt,
-    StreamExt,
+    FutureExt, SinkExt, StreamExt
 };
 
 
@@ -23,20 +24,27 @@ impl WsClient {
         Self(ws_conn)
     }
 
-    pub async fn connect(url: &str) -> Self {
-        Self::new(connect_async(url).await.unwrap().0)
+    pub async fn connect(url: &str) -> Result<Self, ()> {
+        if let Ok(ws_conn) = connect_async(url).await {
+            Ok(Self::new(ws_conn.0))
+        } else { Err(()) }
     }
     
     pub async fn write(&mut self, msg: tungstenite::Message) -> Result<(), ()> {
-        if let Ok(()) = self.0.send(msg).await {
-            Ok(())
-        } else { Err(()) }
+
+        if let Err(why) = self.0.send(msg).await {
+            println!("{why:?}");
+            return Err(());
+        } else { return Ok(()); }
     }
 
-    pub async fn read(&mut self) -> Option<tungstenite::Message> {
-        if let Some(msg) = self.0.next().await {
-            let message = msg.unwrap();
-            Some(message)
+    pub fn read(&mut self) -> Option<tungstenite::Message> {
+        let message = self.0.next().now_or_never();
+        if let Some(res) = message {
+            if let Some(res2) = res {
+                if res2.is_err() { return None }
+                Some(res2.unwrap())
+            } else { None }
         } else { None }
     }
 
