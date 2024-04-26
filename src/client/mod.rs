@@ -46,6 +46,8 @@ impl IntoFuture for ClientBuilder {
                 intents,
                 token,
                 connection: None,
+                last_heartbeat_sent: None,
+                last_heartbeat_acknowledged: false
             };
 
             Ok(client)
@@ -62,7 +64,9 @@ impl IntoFuture for ClientBuilder {
 pub struct Client {
     intents: GatewayIntents,
     token: String,
-    connection: Option<Arc<Mutex<WsClient>>>
+    connection: Option<Arc<Mutex<WsClient>>>,
+    last_heartbeat_sent: Option<Instant>,
+    last_heartbeat_acknowledged: bool,
 }
 impl Client {
 
@@ -80,7 +84,11 @@ impl Client {
             loop {
                 std::thread::sleep(tokio::time::Duration::from_millis(40000));
                 let mut conn = conn.lock().await;
-                let _ = conn.write(tokio_tungstenite::tungstenite::Message::Text(heartbeat.to_string())).await;
+                if let Err(()) = conn.write(tokio_tungstenite::tungstenite::Message::Text(heartbeat.to_string())).await {
+                    drop(conn);
+                    break
+                }
+
                 drop(conn);
             }
         });

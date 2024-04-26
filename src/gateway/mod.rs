@@ -1,5 +1,7 @@
+mod shard;
 mod ws;
 
+pub use shard::*;
 pub use ws::*;
 
 use crate::utils::*;
