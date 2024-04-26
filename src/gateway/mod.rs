@@ -22,7 +22,7 @@ pub enum GatewayOpcode {
     HeartbeatAck        = 11
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct GatewayIntents(Vec<GatewayIntent>);
 
 impl GatewayIntents {
@@ -315,6 +315,8 @@ pub enum GatewayEvent {
     MessageReactionRemoveEmoji,
     /// A user's presence was updated.
     PresenceUpdate,
+    /// Gateway connection is ready.
+    Ready,
     /// Stage instance was created.
     StageInstanceCreate,
     /// Stage instance was updated.
