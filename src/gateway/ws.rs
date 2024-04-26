@@ -24,12 +24,16 @@ impl WsClient {
         Self(ws_conn)
     }
 
+    /// Connect to websocket.
+    /// 
+    /// Returns a [`WsClient`]
     pub async fn connect(url: &str) -> Result<Self, ()> {
         if let Ok(ws_conn) = connect_async(url).await {
             Ok(Self::new(ws_conn.0))
         } else { Err(()) }
     }
-    
+
+    /// Send message to websocket connection.
     pub async fn write(&mut self, msg: tungstenite::Message) -> Result<(), ()> {
 
         if let Err(why) = self.0.send(msg).await {
@@ -38,12 +42,13 @@ impl WsClient {
         } else { return Ok(()); }
     }
 
+    /// Check websocket connection for next message.
     pub fn read(&mut self) -> Option<tungstenite::Message> {
-        let message = self.0.next().now_or_never();
-        if let Some(res) = message {
-            if let Some(res2) = res {
-                if res2.is_err() { return None }
-                Some(res2.unwrap())
+        if let Some(next) = self.0.next().now_or_never() {
+            if let Some(res) = next {
+                if res.is_ok() {
+                    Some(res.unwrap())
+                } else { None }
             } else { None }
         } else { None }
     }
