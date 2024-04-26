@@ -1,14 +1,12 @@
 mod event_emitter;
 
 pub use event_emitter::*;
-use futures::FutureExt;
 
 use crate::utils::*;
 use crate::gateway::{
-    self, GatewayIntents, WsClient
+    self, GatewayIntents, GatewayOpcode, GatewayEvent, WsClient
 };
 
-use std::borrow::BorrowMut;
 use std::future::IntoFuture;
 use futures::future::BoxFuture;
 
@@ -72,6 +70,59 @@ impl Client {
         ClientBuilder::new(token, intents)
     }
 
+    pub fn start_heartbeat(&mut self) {
+        let conn = Arc::clone(self.connection.as_ref().unwrap());
+        tokio::spawn(async move {
+            let heartbeat = serde_json::json!({
+                "op": gateway::GatewayOpcode::Heartbeat, 
+                "d": {}
+            });
+            loop {
+                std::thread::sleep(tokio::time::Duration::from_millis(40000));
+                let mut conn = conn.lock().await;
+                let _ = conn.write(tokio_tungstenite::tungstenite::Message::Text(heartbeat.to_string())).await;
+                drop(conn);
+            }
+        });
+    }
+
+    pub async fn watch_gateway(&mut self) {
+
+        let conn = Arc::clone(self.connection.as_ref().unwrap());
+            loop {
+                let mut conn = conn.lock().await;
+                if let Some(msg) = conn.read() {
+                    tokio::spawn(async move {
+                        let payload = serde_json::from_str::<gateway::WsRecPayload>(msg.into_text().unwrap().as_str());
+                        if payload.is_ok() {
+                            let payload = payload.unwrap();
+                            println!("{payload:#?}");
+                            match payload.op {
+                                GatewayOpcode::Dispatch => {
+                                    if let Some(event) = payload.t {
+                                        match event {
+                                            _ => {}
+                                        }
+                                    }
+                                },
+                                GatewayOpcode::Heartbeat => {},
+                                GatewayOpcode::Identify => {},
+                                GatewayOpcode::PresenceUpdate => {},
+                                GatewayOpcode::VoiceStateUpdate => {},
+                                GatewayOpcode::Resume => {},
+                                GatewayOpcode::Reconnect => {},
+                                GatewayOpcode::RequestGuildMembers => {},
+                                GatewayOpcode::InvalidSession => {},
+                                GatewayOpcode::Hello => {},
+                                GatewayOpcode::HeartbeatAck => {}
+                            }
+                        }
+                });
+                drop(conn);
+            }
+        }
+    }
+
     pub async fn login(&mut self) -> Result<(), ()> {
 
         self.connection = Some(Arc::new(Mutex::new(WsClient::connect("wss://gateway.discord.gg").await.unwrap_or_else(|err| {
@@ -88,49 +139,22 @@ impl Client {
                     "browser": crate::constants::USER_AGENT,
                     "device": "github.com/grhx/dcrs"
                 },
+                "presence": {
+                    "activities": [{
+                        "name": "/help",
+                        "type": 3,
+                    }],
+                },
             }
         });
 
 
         let _ = self.connection.as_ref().unwrap().lock().await.write(tokio_tungstenite::tungstenite::Message::Text(msg.to_string())).await;
 
-        let conn = Arc::clone(&self.connection.as_ref().unwrap());
+        self.start_heartbeat();
+        self.watch_gateway().await;
 
-        tokio::spawn(async move {
-            let heartbeat = serde_json::json!({
-                "op": gateway::GatewayOpcode::Heartbeat, 
-                "d": {}
-            });
-            loop {
-                std::thread::sleep(tokio::time::Duration::from_millis(45000));
-                let mut conn = conn.lock().await;
-                println!("HERE FOR HEARTBEAT");
-                if let Err(()) = conn.write(tokio_tungstenite::tungstenite::Message::Text(heartbeat.to_string())).await {
-                    println!("ERROR");
-                    return;
-                } else {
-                    println!("HEARTBEAT");
-                }
-                drop(conn);
-            }
-        });
-
-        loop {
-            let con = Arc::clone(&self.connection.as_ref().unwrap());
-            let mut con = con.lock().await;
-            match con.read() {
-                Some(message) => {
-                    tokio::spawn(async {
-                        let rec_payload = 
-                            serde_json::from_str::<gateway::WsRecPayload>(message.into_text().unwrap().as_str());
-                        if rec_payload.is_err() { return }
-                        println!("{:#?}", rec_payload.ok().unwrap());
-                    });
-                },
-                _ => {}
-            }
-            drop(con);
-        }
+        Ok(())
 
     }
 

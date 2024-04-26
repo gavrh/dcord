@@ -1,5 +1,3 @@
-use std::future::IntoFuture;
-
 use super::*;
 use crate::utils::*;
 
@@ -20,11 +18,12 @@ pub struct WsClient(WebSocketStream<MaybeTlsStream<TcpStream>>);
 
 impl WsClient {
 
+    /// Returns new [`WsClient`].
     pub fn new(ws_conn: WebSocketStream<MaybeTlsStream<TcpStream>>) -> Self {
         Self(ws_conn)
     }
 
-    /// Connect to websocket.
+    /// Connect to gateway.
     /// 
     /// Returns a [`WsClient`]
     pub async fn connect(url: &str) -> Result<Self, ()> {
@@ -33,7 +32,32 @@ impl WsClient {
         } else { Err(()) }
     }
 
-    /// Send message to websocket connection.
+    /// Re-connects to gateway.
+    /// 
+    /// Returns a [`WsClient`]
+    pub async fn resume(url: &str, token: String, session_id: String, seq: u64) -> Result<Self, ()> {
+
+        if let Ok(ws_conn) = connect_async(url).await {
+            let mut conn = Self::new(ws_conn.0);
+
+            let resume_msg = serde_json::json!({
+                "op": GatewayOpcode::Resume,
+                "d": {
+                    "token": token,
+                    "session_id": session_id,
+                    "seq": seq,
+                }
+            });
+
+            let _ = conn.write(tungstenite::Message::Text(resume_msg.to_string())).await;
+
+            Ok(conn)
+
+        } else { Err(()) }
+
+    }
+
+    /// Send message to gateway connection.
     pub async fn write(&mut self, msg: tungstenite::Message) -> Result<(), ()> {
 
         if let Err(why) = self.0.send(msg).await {
@@ -42,7 +66,7 @@ impl WsClient {
         } else { return Ok(()); }
     }
 
-    /// Check websocket connection for next message.
+    /// Check gateway connection for next message.
     pub fn read(&mut self) -> Option<tungstenite::Message> {
         if let Some(next) = self.0.next().now_or_never() {
             if let Some(res) = next {
@@ -51,6 +75,10 @@ impl WsClient {
                 } else { None }
             } else { None }
         } else { None }
+    }
+
+    pub async fn close(&mut self) {
+        let _ = self.0.close(None).await;
     }
 
 }
@@ -70,7 +98,7 @@ enum WsRecData {
 #[derive(Debug, Deserialize)]
 #[allow(dead_code)]
 pub struct WsRecPayload {
-    op: GatewayOpcode,
-    s: Option<u64>,
-    t: Option<GatewayEvent>,
+    pub op: GatewayOpcode,
+    pub s: Option<u64>,
+    pub t: Option<GatewayEvent>,
 }
