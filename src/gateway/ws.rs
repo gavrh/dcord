@@ -92,7 +92,15 @@ enum WsWriteData {
 
 #[derive(Debug, Deserialize)]
 #[allow(dead_code)]
-enum WsRecData {
+#[serde(untagged)]
+pub enum WsRecData {
+    Ready {
+        session_id: String,
+    },
+    Heartbeat {
+        heartbeat_interval: u32,
+    },
+    None {}
 }
 
 #[derive(Debug, Deserialize)]
@@ -101,4 +109,5 @@ pub struct WsRecPayload {
     pub op: GatewayOpcode,
     pub s: Option<u64>,
     pub t: Option<GatewayEvent>,
+    pub d: Option<WsRecData>
 }

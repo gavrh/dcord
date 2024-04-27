@@ -60,9 +60,27 @@ impl Shard {
             "d": ""
         });
 
-        let _ = self.client.write(tungstenite::Message::Text(heartbeat_payload.to_string())).await;
+        self.client.write(tungstenite::Message::Text(heartbeat_payload.to_string())).await?;
         self.last_heartbeat_sent = Some(Instant::now());
         self.last_heartbeat_acknowledged = false;
+
+        Ok(())
+    }
+
+    pub async fn handle_reconnect_and_resume(&mut self) -> Result<(), ()> {
+
+        self.client = WsClient::connect("wss://gateway.discord.gg/").await?;
+
+        let resume_msg = serde_json::json!({
+            "op": GatewayOpcode::Resume,
+            "d": {
+                "token": self.token,
+                "session_id": self.session_id.as_ref().unwrap(),
+                "seq": self.seq
+            }
+        });
+
+        self.client.write(tungstenite::Message::Text(resume_msg.to_string())).await?;
 
         Ok(())
     }
@@ -77,7 +95,7 @@ impl Shard {
                 "properties": {
                     "os": std::env::consts::OS,
                     "browser": crate::constants::USER_AGENT,
-                    "device": "github.com/grhx/dcrs"
+                    "device": crate::constants::GITHUB
                 },
                 "presence": {
                     "activities": [{
@@ -88,7 +106,8 @@ impl Shard {
             }
         });
 
-        let _ = self.client.write(tungstenite::Message::Text(msg.to_string())).await;
+        self.client.write(tungstenite::Message::Text(msg.to_string()))
+        .await.unwrap_or_else(|_| { panic!("ERROR IDENTIFYING")});
 
         loop {
 
@@ -100,7 +119,6 @@ impl Shard {
                 Some(message) => {
                     
                     if message.is_close() { break }
-                    println!("{message:#?}");
                     let payload = serde_json::from_str::<WsRecPayload>(message.into_text().unwrap().as_str())
                     .unwrap_or_else(|err| { panic!("{err:?}"); });
 
@@ -113,10 +131,23 @@ impl Shard {
 
                     // match gateway opcode
                     match payload.op { 
+                        GatewayOpcode::Dispatch => {
+
+                            match payload.d.unwrap() {
+                                WsRecData::Ready { session_id } => {
+                                    self.session_id = Some(session_id);
+                                }
+                                _ => {} 
+                            }
+
+                        },
+                        GatewayOpcode::Reconnect => {
+                            self.handle_reconnect_and_resume().await?;
+                        },
                         GatewayOpcode::HeartbeatAck => {
                             self.last_heartbeat_ack = Some(Instant::now());
                             self.last_heartbeat_acknowledged = true;
-                        }
+                        },
                         _ => {}
                     }
 

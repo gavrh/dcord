@@ -9,3 +9,4 @@ pub const LARGE_THRESHOLD: u8 = 250;
 pub const MESSAGE_CODE_LIMIT: usize = 2000;
 pub const MEMBER_FETCH_LIMIT: usize = 1000;
 pub const USER_AGENT: &str = concat!("dcrs v", env!("CARGO_PKG_VERSION"));
+pub const GITHUB: &str = env!("CARGO_PKG_REPOSITORY");

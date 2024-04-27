@@ -76,29 +76,10 @@ impl Client {
 
     pub async fn login(&mut self) -> Result<(), ()> {
 
-        let msg = serde_json::json!({
-            "op": gateway::GatewayOpcode::Identify,
-            "d": {
-                "token": self.token,
-                "intents": self.intents.bitwise(),
-                "properties": {
-                    "os": std::env::consts::OS,
-                    "browser": crate::constants::USER_AGENT,
-                    "device": "github.com/grhx/dcrs"
-                },
-                "presence": {
-                    "activities": [{
-                        "name": "/help",
-                        "type": 3,
-                    }],
-                },
-            }
-        });
-
         self.connection = Some(Shard::new(self.token.clone(), self.intents.clone())
         .await.unwrap_or_else(|err| { panic!("{err:?}") }));
 
-        let _ = self.connection.as_mut().unwrap().start().await;
+        self.connection.as_mut().unwrap().start().await?;
 
         Ok(())
 
