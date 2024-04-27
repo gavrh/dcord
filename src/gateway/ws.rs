@@ -98,7 +98,7 @@ pub enum WsRecData {
         session_id: String,
     },
     Heartbeat {
-        heartbeat_interval: u32,
+        heartbeat_interval: u64,
     },
     None {}
 }

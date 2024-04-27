@@ -27,7 +27,7 @@ impl Shard {
                 last_heartbeat_sent: None,
                 last_heartbeat_ack: None,
                 last_heartbeat_acknowledged: true,
-                heartbeat_interval: Some(Duration::from_millis(40000)),
+                heartbeat_interval: None,
                 seq: 0,
                 session_id: None,
                 started: Instant::now(),
@@ -143,6 +143,14 @@ impl Shard {
                         },
                         GatewayOpcode::Reconnect => {
                             self.handle_reconnect_and_resume().await?;
+                        },
+                        GatewayOpcode::Hello => {
+                            match payload.d.unwrap() {
+                                WsRecData::Heartbeat { heartbeat_interval } => {
+                                    self.heartbeat_interval = Some(Duration::from_millis(heartbeat_interval));
+                                },
+                                _ => {}
+                            }
                         },
                         GatewayOpcode::HeartbeatAck => {
                             self.last_heartbeat_ack = Some(Instant::now());
