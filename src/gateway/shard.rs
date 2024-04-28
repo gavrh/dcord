@@ -88,6 +88,7 @@ impl Shard {
         Ok(())
     }
 
+    /// Starts [`Shard`].
     pub async fn start(&mut self) -> Result<(), ()> {
 
         let msg = serde_json::json!({

@@ -4,7 +4,7 @@ pub use event_emitter::*;
 
 use crate::utils::*;
 use crate::gateway::{
-    self, GatewayIntents, Shard
+    GatewayIntents, Shard
 };
 
 use std::future::IntoFuture;
@@ -78,6 +78,10 @@ impl Client {
         ClientBuilder::new(token, intents)
     }
 
+    /// Login with [`Client`]
+    /// 
+    /// Automatically shards the client and handles all payloads
+    /// then send to event handler.
     pub async fn login(&mut self) -> Result<(), ()> {
 
         self.connection = Some(Shard::new(self.token.clone(), self.intents.clone())
