@@ -28,6 +28,10 @@ impl ClientBuilder {
         Self::_new(token.as_ref().to_string(), intents)
     }
 
+    pub fn event_handler<H: EventHandler + 'static>(_event_handler: H) {
+        unimplemented!();
+    }
+
 }
 impl IntoFuture for ClientBuilder {
     

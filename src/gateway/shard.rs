@@ -69,6 +69,9 @@ impl Shard {
 
     pub async fn handle_reconnect_and_resume(&mut self) -> Result<(), ()> {
 
+        println!("RECONNECTING AND RESUMING!");
+
+        self.client.close().await;
         self.client = WsClient::connect("wss://gateway.discord.gg/").await?;
 
         let resume_msg = serde_json::json!({
@@ -122,7 +125,7 @@ impl Shard {
                     let payload = serde_json::from_str::<WsRecPayload>(message.into_text().unwrap().as_str())
                     .unwrap_or_else(|err| { panic!("{err:?}"); });
 
-                    println!("{payload:#?}");
+                    // println!("{payload:#?}");
 
                     // update sequence
                     if let Some(s) = payload.s {
@@ -133,6 +136,8 @@ impl Shard {
                     match payload.op { 
                         GatewayOpcode::Dispatch => {
 
+                            println!("{:?}", payload.t.unwrap());
+                            
                             match payload.d.unwrap() {
                                 WsRecData::Ready { session_id } => {
                                     self.session_id = Some(session_id);
