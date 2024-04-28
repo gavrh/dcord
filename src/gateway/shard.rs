@@ -108,7 +108,7 @@ impl Shard {
             }
         });
 
-        let _ = self.client.write(tungstenite::Message::Text(msg.to_string())).await?;
+        let _ = self.client.write(tungstenite::Message::Text(msg.to_string())).await;
 
         loop {
 
@@ -123,8 +123,6 @@ impl Shard {
                     let payload = serde_json::from_str::<WsRecPayload>(message.into_text().unwrap().as_str())
                     .unwrap_or_else(|err| { panic!("{err:?}"); });
 
-                    // println!("{payload:#?}");
-
                     // update sequence
                     if let Some(s) = payload.s {
                         self.seq = s;
@@ -133,16 +131,26 @@ impl Shard {
                     // match gateway opcode
                     match payload.op { 
                         GatewayOpcode::Dispatch => {
-
-                            println!("{:?}", payload.t.unwrap());
                             
+                            match payload.t.unwrap() {
+                                GatewayEvent::MessageCreate => {
+                                    println!("NEW MESSAGE");
+                                },
+                                GatewayEvent::MessageDelete => {
+                                    let _ = self.handle_reconnect_and_resume().await;
+                                },
+                                GatewayEvent::Resumed => {
+                                    println!("SUCCESSFULLY RESUMED");
+                                },
+                                _ => {}
+                            }
+
                             match payload.d.unwrap() {
                                 WsRecData::Ready { session_id } => {
                                     self.session_id = Some(session_id);
-                                }
+                                },
                                 _ => {} 
                             }
-
                         },
                         GatewayOpcode::Reconnect => {
                             let _ = self.handle_reconnect_and_resume().await;

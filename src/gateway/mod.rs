@@ -225,18 +225,6 @@ pub enum GatewayEvent {
     ChannelDelete,
     /// Message was pinned or unpinned.
     ChannelPinsUpdate,
-    /// Thread created, also sent when being added to a private thread.
-    ThreadCreate,
-    /// Thread was updated.
-    ThreadUpdate,
-    /// Thread was deleted.
-    ThreadDelete,
-    /// Sent when gaining access to a channel, contains all active threads in that channel.
-    ThreadListSync,
-    /// Thread member for the current user was updated.
-    ThreadMemberUpdate,
-    /// Some user(s) were added to or removed from a thread.
-    ThreadMembersUpdate,
     /// Entitlement was created.
     EntitlementCreate,
     /// Entitlement was updated.
@@ -305,6 +293,10 @@ pub enum GatewayEvent {
     MessageDelete,
     /// Multiple messages were deleted at once.
     MessageDeleteBulk,
+    /// A user voted on a poll.
+    MessagePollVoteAdd,
+    /// A user removed a vote on a poll.
+    MessagePollVoteRemove,
     /// A user reacted to a message.
     MessageReactionAdd,
     /// A user removed a reaction from a message.
@@ -315,14 +307,28 @@ pub enum GatewayEvent {
     MessageReactionRemoveEmoji,
     /// A user's presence was updated.
     PresenceUpdate,
-    /// Gateway connection is ready.
+    /// Connection is established and client has been identified.
     Ready,
+    /// Connection has been resumed.
+    Resumed,
     /// Stage instance was created.
     StageInstanceCreate,
     /// Stage instance was updated.
     StageInstanceUpdate,
     /// Stage instance was deleted.
     StageInstanceDelete,
+    /// Thread created, also sent when being added to a private thread.
+    ThreadCreate,
+    /// Thread was updated.
+    ThreadUpdate,
+    /// Thread was deleted.
+    ThreadDelete,
+    /// Sent when gaining access to a channel, contains all active threads in that channel.
+    ThreadListSync,
+    /// Thread member for the current user was updated.
+    ThreadMemberUpdate,
+    /// Some user(s) were added to or removed from a thread.
+    ThreadMembersUpdate,
     /// A user started typing in a channel.
     TypingStart,
     /// Properties about the user changed.
@@ -332,11 +338,7 @@ pub enum GatewayEvent {
     /// Guild's voice server was updated.
     VoiceServerUpdate,
     /// Guild channel webhook was created, updated, or deleted.
-    WebhooksUpdate,
-    /// A user voted on a poll.
-    MessagePollVoteAdd,
-    /// A user removed a vote on a poll.
-    MessagePollVoteRemove
+    WebhooksUpdate
 }
 
 pub mod gateway_close_codes {

@@ -1,9 +1,8 @@
-use async_trait::async_trait;
+use crate::utils::*;
 
 #[async_trait]
 #[allow(unused_variables)]
 pub trait EventHandler: Send + Sync {
-    async fn ready(){}
     async fn application_command_permissions_update(){}
     async fn auto_moderation_rule_create(){}
     async fn auto_moderation_rule_update(){}
@@ -13,12 +12,6 @@ pub trait EventHandler: Send + Sync {
     async fn channel_update(){}
     async fn channel_delete(){}
     async fn channel_pins_update(){}
-    async fn thread_create(){}
-    async fn thread_update(){}
-    async fn thread_delete(){}
-    async fn thread_list_sync(){}
-    async fn thread_member_update(){}
-    async fn thread_members_update(){}
     async fn entitlement_create(){}
     async fn entitlement_update(){}
     async fn entitlement_delete(){}
@@ -53,19 +46,27 @@ pub trait EventHandler: Send + Sync {
     async fn message_update(){}
     async fn message_delete(){}
     async fn message_delete_bulk(){}
+    async fn message_poll_vote_add(){}
+    async fn message_poll_vote_remove(){}
     async fn message_reaction_add(){}
     async fn message_reaction_remove(){}
     async fn message_reaction_remove_all(){}
     async fn message_reaction_remove_emoji(){}
     async fn presence_update(){}
+    async fn ready(){}
+    async fn resumed(){}
     async fn stage_instance_create(){}
     async fn stage_instance_update(){}
     async fn stage_instance_delete(){}
+    async fn thread_create(){}
+    async fn thread_update(){}
+    async fn thread_delete(){}
+    async fn thread_list_sync(){}
+    async fn thread_member_update(){}
+    async fn thread_members_update(){}
     async fn typing_start(){}
     async fn user_update(){}
     async fn voice_state_update(){}
     async fn voice_server_update(){}
     async fn webhooks_update(){}
-    async fn message_poll_vote_add(){}
-    async fn message_poll_vote_remove(){}
 }
