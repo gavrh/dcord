@@ -60,7 +60,7 @@ impl Shard {
             "d": ""
         });
 
-        self.client.write(tungstenite::Message::Text(heartbeat_payload.to_string())).await?;
+        let _ = self.client.write(tungstenite::Message::Text(heartbeat_payload.to_string())).await;
         self.last_heartbeat_sent = Some(Instant::now());
         self.last_heartbeat_acknowledged = false;
 
@@ -83,9 +83,7 @@ impl Shard {
             }
         });
 
-        self.client.write(tungstenite::Message::Text(resume_msg.to_string())).await?;
-
-        Ok(())
+        return self.client.write(tungstenite::Message::Text(resume_msg.to_string())).await;
     }
 
     /// Starts [`Shard`].
@@ -110,8 +108,7 @@ impl Shard {
             }
         });
 
-        self.client.write(tungstenite::Message::Text(msg.to_string()))
-        .await.unwrap_or_else(|_| { panic!("ERROR IDENTIFYING")});
+        let _ = self.client.write(tungstenite::Message::Text(msg.to_string())).await?;
 
         loop {
 
@@ -148,7 +145,7 @@ impl Shard {
 
                         },
                         GatewayOpcode::Reconnect => {
-                            self.handle_reconnect_and_resume().await?;
+                            let _ = self.handle_reconnect_and_resume().await;
                         },
                         GatewayOpcode::Hello => {
                             match payload.d.unwrap() {
