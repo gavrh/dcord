@@ -9,7 +9,7 @@ use tokio_tungstenite::{
 };
 use tokio::net::TcpStream;
 use futures::{
-    FutureExt, SinkExt, StreamExt
+    stream::FusedStream, FutureExt, SinkExt, StreamExt
 };
 
 
@@ -75,6 +75,11 @@ impl WsClient {
                 } else { None }
             } else { None }
         } else { None }
+    }
+
+    /// Check if gateway connection is closed.
+    pub fn is_closed(&self) -> bool {
+        self.0.is_terminated()
     }
 
     pub async fn close(&mut self) {

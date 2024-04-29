@@ -333,10 +333,12 @@ pub enum GatewayEvent {
     TypingStart,
     /// Properties about the user changed.
     UserUpdate,
+    /// Voice channel status was updated.
+    VoiceChannelStatusUpdate,
+    /// Guild's voice server was update.
+    VoiceServerUpdate,
     /// Someone joined, left, or moved a voice channel.
     VoiceStateUpdate,
-    /// Guild's voice server was updated.
-    VoiceServerUpdate,
     /// Guild channel webhook was created, updated, or deleted.
     WebhooksUpdate
 }
