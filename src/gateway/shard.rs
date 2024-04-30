@@ -71,6 +71,67 @@ impl Shard {
         Ok(())
     }
 
+    pub async fn handle_payload(&mut self, payload: WsRecPayload) -> Result<(), ()> {
+
+        // update sequence
+        if let Some(s) = payload.s {
+            self.seq = s;
+        }
+
+        println!("{:?}", payload.op);
+
+        // match gateway opcode
+        match payload.op { 
+            GatewayOpcode::Dispatch => {
+
+                println!("{:?}", payload.t.as_ref().unwrap());
+                
+                match payload.t.unwrap() {
+                    GatewayEvent::MessageCreate => {
+                        println!("NEW MESSAGE");
+                    }
+                    GatewayEvent::MessageDelete => {
+                        if let Err(_) = self.handle_reconnect_and_resume().await {
+                            return Err(())
+                        }
+                    }
+                    GatewayEvent::Resumed => {
+                        println!("SUCCESSFULLY RESUMED");
+                    }
+                    _ => {}
+                }
+
+                match payload.d.unwrap() {
+                    WsRecData::Ready { session_id } => {
+                        self.session_id = Some(session_id);
+                    }
+                    _ => {} 
+                }
+            }
+            GatewayOpcode::Reconnect => {
+                if let Err(()) = self.handle_reconnect_and_resume().await {
+                    println!("ERROR RECONNECTING");
+                    return Err(())
+                }
+            }
+            GatewayOpcode::Hello => {
+                match payload.d.unwrap() {
+                    WsRecData::Heartbeat { heartbeat_interval } => {
+                        self.heartbeat_interval = Some(Duration::from_millis(heartbeat_interval-5000));
+                    }
+                    _ => {}
+                }
+            }
+            GatewayOpcode::HeartbeatAck => {
+                self.last_heartbeat_ack = Some(Instant::now());
+                self.last_heartbeat_acknowledged = true;
+            }
+            _ => {}
+        }
+
+        Ok(())
+    }
+
     pub async fn handle_reconnect_and_resume(&mut self) -> Result<(), ()> {
 
         println!("RECONNECTING AND RESUMING!");
@@ -96,7 +157,7 @@ impl Shard {
                 },
                 "presence": {
                     "activities": [{
-                        "name": "/help",
+                        "name": "/legal",
                         "type": 3,
                     }],
                 },
@@ -119,65 +180,22 @@ impl Shard {
             } self.count+=1;
 
             // read websocket for new payload
-            match self.client.read() {
-                Some(message) => {
+            if let Ok(option_message) = self.client.read().await {
+                match option_message {
+                    Some(message) => {
 
-                    if message.is_close() { break }
-                    let payload = serde_json::from_str::<WsRecPayload>(message.into_text().unwrap().as_str())
-                    .unwrap_or_else(|err| { panic!("{err:?}"); });
+                        if message.is_close() { break }
+                        let payload = serde_json::from_str::<WsRecPayload>(message.into_text().unwrap().as_str())
+                        .unwrap_or_else(|err| { panic!("{err:?}"); });
 
-                    println!("{:?}", &payload.op);
+                        if let Err(()) = self.handle_payload(payload).await {
+                            break
+                        }
 
-                    // update sequence
-                    if let Some(s) = payload.s {
-                        self.seq = s;
                     }
-
-                    // match gateway opcode
-                    match payload.op { 
-                        GatewayOpcode::Dispatch => {
-                            
-                            match payload.t.unwrap() {
-                                GatewayEvent::MessageCreate => {
-                                    println!("NEW MESSAGE");
-                                }
-                                GatewayEvent::Resumed => {
-                                    println!("SUCCESSFULLY RESUMED");
-                                }
-                                _ => {}
-                            }
-
-                            match payload.d.unwrap() {
-                                WsRecData::Ready { session_id } => {
-                                    self.session_id = Some(session_id);
-                                }
-                                _ => {} 
-                            }
-                        },
-                        GatewayOpcode::Reconnect => {
-                            if let Err(()) = self.handle_reconnect_and_resume().await {
-                                println!("ERROR RECONNECTING");
-                                return Err(())
-                            }
-                        }
-                        GatewayOpcode::Hello => {
-                            match payload.d.unwrap() {
-                                WsRecData::Heartbeat { heartbeat_interval } => {
-                                    self.heartbeat_interval = Some(Duration::from_millis(heartbeat_interval));
-                                }
-                                _ => {}
-                            }
-                        }
-                        GatewayOpcode::HeartbeatAck => {
-                            self.last_heartbeat_ack = Some(Instant::now());
-                            self.last_heartbeat_acknowledged = true;
-                        }
-                        _ => {}
-                    }
-
+                    _ => {}
                 }
-                None => { if self.client.is_closed() { println!("CLOSED {:?}", Instant::now()); break } }
-            }
+            } else { break }
 
         }
 

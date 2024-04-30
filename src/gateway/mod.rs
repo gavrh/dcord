@@ -7,7 +7,7 @@ pub use ws::*;
 use crate::utils::*;
 
 #[derive(Debug, Serialize_repr, Deserialize_repr)]
-#[repr(i8)]
+#[repr(u8)]
 pub enum GatewayOpcode {
     Dispatch            = 0,
     Heartbeat           = 1,

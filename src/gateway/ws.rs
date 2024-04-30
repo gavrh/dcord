@@ -49,7 +49,9 @@ impl WsClient {
                 }
             });
 
-            let _ = conn.write(tungstenite::Message::Text(resume_msg.to_string())).await;
+            if let Err(err) = conn.write(tungstenite::Message::Text(resume_msg.to_string())).await {
+                println!("ERROR RESUMING {err:?}");
+            }
 
             Ok(conn)
 
@@ -67,14 +69,16 @@ impl WsClient {
     }
 
     /// Check gateway connection for next message.
-    pub fn read(&mut self) -> Option<tungstenite::Message> {
+    pub async fn read(&mut self) -> Result<Option<tungstenite::Message>, ()> {
         if let Some(next) = self.0.next().now_or_never() {
             if let Some(res) = next {
-                if res.is_ok() {
-                    Some(res.unwrap())
-                } else { None }
-            } else { None }
-        } else { None }
+                if let Ok(message) = res {
+                    Ok(Some(message))
+                } else {
+                    Err(())
+                }
+            } else { Ok(None) }
+        } else { Ok(None) }
     }
 
     /// Check if gateway connection is closed.
