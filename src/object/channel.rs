@@ -60,9 +60,19 @@ pub struct ForumChannelTag {
     pub eomji: Option<String>, // replace later
 }
 
+pub enum ChannelSortOrder {
+    /// Sort forum posts by activity.
+    LatestActivity,
+    /// Sort forum posts by creation time (from most recent to oldest).
+    CreationDate
+}
+
 pub enum ForumChannelLayout {
+    /// No default has been set for [`GuildForum`](ChannelKind::GuildForum) channel.
     NotSet,
+    /// Display posts as a list.
     ListView,
+    /// Display posts as a collection of tiles.
     GalleryView
 }
 
@@ -103,6 +113,6 @@ pub struct Channel {
     pub applied_tags: Option<Vec<ForumChannelTag>>,
     pub default_reaction_emoji: Option<String>, // replace later
     pub default_thread_rate_limit_per_user: Option<u64>,
-    pub default_sort_order: Option<u16>,
+    pub default_sort_order: Option<ChannelSortOrder>,
     pub default_forum_layout: Option<ForumChannelLayout>
 }

@@ -1,7 +1,25 @@
+mod audit_log;
+mod auto_moderation;
 mod channel;
+mod emoji;
+mod guild;
+mod invite;
 mod member;
+mod message;
+mod poll;
 mod role;
+mod user;
+mod webhook;
 
+pub use audit_log::*;
+pub use auto_moderation::*;
 pub use channel::*;
+pub use emoji::*;
+pub use guild::*;
+pub use invite::*;
 pub use member::*;
+pub use message::*;
+pub use poll::*;
 pub use role::*;
+pub use user::*;
+pub use webhook::*;
