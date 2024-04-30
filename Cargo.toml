@@ -1,16 +1,16 @@
 [package]
-name = "dcrs"
+name = "dcord"
 version = "0.0.2"
 edition = "2021"
-authors = ["github.com/grhx"]
+authors = ["https://github.com/grhx"]
 
 description = "Discord API Library"
 readme = "README.md"
 license = "MIT"
 keywords = ["discord", "bot", "api"]
 
-repository = "https://github.com/grhx/dcrs"
-documentation = "https://docs.rs/dcrs"
+repository = "https://github.com/grhx/"
+documentation = "https://docs.rs/dcord"
 
 [dependencies]
 # Required Dependencies
@@ -29,7 +29,7 @@ tokio-tungstenite = { version = "0.21.0", optional = true }
 default = ["default_no_backend", "rustls_backend"]
 default_native_tls = ["default_no_backend", "native_tls_backend"]
 
-# dcrs requires a backend, this picks all default features without a backend.
+# dcord requires a backend, this picks all default features without a backend.
 default_no_backend = ["builder", "cache", "client", "gateway", "http", "utils"]
 
 # Enabled builder structs
@@ -44,7 +44,7 @@ client = []
 gateway = []
 # Enables REST api support.
 http = []
-# Enables dcrs utils.
+# Enables dcord utils.
 utils = []
 
 # Backends to pick from:

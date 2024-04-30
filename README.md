@@ -1,24 +1,16 @@
-# dcrs
+# dcord
 
 > made with <3
 
-[![Documentation](https://img.shields.io/badge/Docs.rs-gray?logo="docs.rs"&logoColor="yellow")](https://docs.rs/dcrs)
-[![Version](https://img.shields.io/crates/v/dcrs?label="Crates.io"&color="orange"&logo="rust"&logoColor="orange")](https://crates.io/crates/dcrs)
-![Size](https://img.shields.io/github/languages/code-size/grhx/dcrs?label="Size"&color="green")
-[![Downloads](https://img.shields.io/crates/d/dcrs?label="Downloads"&color="blue")](https://crates.io/crates/dcrs)
+[![Documentation](https://img.shields.io/badge/Docs.rs-gray?logo="docs.rs"&logoColor="yellow")](https://docs.rs/dcord)
+[![Version](https://img.shields.io/crates/v/dcord?label="Crates.io"&color="orange"&logo="rust"&logoColor="orange")](https://crates.io/crates/dcord)
+![Size](https://img.shields.io/github/languages/code-size/grhx/dcord?label="Size"&color="green")
+[![Downloads](https://img.shields.io/crates/d/dcord?label="Downloads"&color="blue")](https://crates.io/crates/dcord)
 
-[![License](https://img.shields.io/github/license/grhx/dcrs?label="License"&color="AA55AA")](https://github.com/grhx/dcrs/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/grhx/dcord?label="License"&color="AA55AA")](https://github.com/grhx/dcord/blob/master/LICENSE)
 [![Discord](https://img.shields.io/discord/81384788765712384?label="Discord%20API"&logo="discord"&logoColor="7289da"&color="7289da")](https://discord.com/invite/discord-api)
 
 [comment]:<img align="right" src="https://i.imgur.com/QizpY58.png" width="300" />
-
-Introducing **dcrs**, your ultimate solution for seamless integration with the Discord chat client API. This Rust library offers blazingly fast performance and comprehensive functionality, making interaction with Discord's API effortless. Designed to empower developers with robust low-level bindings, **dcrs** provides unparalleled support for Discord's API endpoints, WebSocket interface, and voice functionality.
-
-With its focus on speed and simplicity, **dcrs** unlocks limitless possibilities for building dynamic and immersive experiences within the Discord ecosystem. Whether you're crafting bots, managing communities, or orchestrating engaging interactions, **dcrs** empowers you to unleash your creativity with ease and efficiency.
-
-Harness the full potential of Discord integration effortlessly with **dcrs**.
-
-#
 
 > [!CAUTION]
 >
@@ -31,13 +23,13 @@ setup coming soon...
 
 ### Cargo
 ```
-cargo add dcrs
+cargo add dcord
 ```
 
 #### `Cargo.toml` File
 ```toml
 [dependencies]
-dcrs = "0.0.3"
+dcord = "0.0.3"
 tokio = { version = "1.37.0", features = ["macros", "rt-multi-thread"] }
 ```
 
