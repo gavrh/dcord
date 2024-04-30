@@ -76,7 +76,7 @@ impl Shard {
         println!("RECONNECTING AND RESUMING!");
 
         self.client.close().await;
-        self.client = WsClient::resume("wss://gateway.discord.gg/", self.token.clone(), self.session_id.clone().unwrap(), self.seq).await?;
+        self.client = WsClient::resume(crate::constants::GATEWAY, self.token.clone(), self.session_id.clone().unwrap(), self.seq).await?;
 
         Ok(())
     }
@@ -156,6 +156,7 @@ impl Shard {
                         },
                         GatewayOpcode::Reconnect => {
                             if let Err(()) = self.handle_reconnect_and_resume().await {
+                                println!("ERROR RECONNECTING");
                                 return Err(())
                             }
                         }

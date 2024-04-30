@@ -7,6 +7,7 @@ pub mod prelude;
 // featured mods (features coming soon)
 pub mod client;
 pub mod gateway;
+pub mod object;
 
 mod utils;
 
