@@ -15,13 +15,11 @@ pub struct Shard {
     pub started: Instant,
     pub token: String,
     pub intents: GatewayIntents,
-    count: u128
+    count: u128,
 }
 
 impl Shard {
-
     pub async fn new(token: String, intents: GatewayIntents) -> Result<Self, ()> {
-
         if let Ok(client) = WsClient::connect("wss://gateway.discord.gg/").await {
             return Ok(Self {
                 client,
@@ -34,36 +32,39 @@ impl Shard {
                 started: Instant::now(),
                 token,
                 intents,
-                count: 0
+                count: 0,
             });
         }
         Err(())
     }
 
     pub async fn handle_heartbeat(&mut self) -> Result<(), ()> {
-            
         let Some(heartbeat_interval) = self.heartbeat_interval else {
-            return Ok(())
+            return Ok(());
         };
 
         if let Some(last_sent) = self.last_heartbeat_sent {
             if last_sent.elapsed() <= heartbeat_interval {
-                return Ok(())
+                return Ok(());
             }
         };
 
         if !self.last_heartbeat_acknowledged {
-            return Ok(())
+            return Ok(());
         };
 
         // heartbeat
         let heartbeat_payload = serde_json::json!({
             "op": GatewayOpcode::Heartbeat,
-            "d": ""
+            "d": self.seq
         });
 
-        if let Err(_) = self.client.write(tungstenite::Message::Text(heartbeat_payload.to_string())).await {
-            return Err(())
+        if let Err(_) = self
+            .client
+            .write(tungstenite::Message::Text(heartbeat_payload.to_string()))
+            .await
+        {
+            return Err(());
         }
         self.last_heartbeat_sent = Some(Instant::now());
         self.last_heartbeat_acknowledged = false;
@@ -72,31 +73,23 @@ impl Shard {
     }
 
     pub async fn handle_payload(&mut self, payload: WsRecPayload) -> Result<(), ()> {
-
         // update sequence
         if let Some(s) = payload.s {
             self.seq = s;
         }
 
-        println!("{:?}", payload.op);
+        print!("{:?}", payload.op);
 
         // match gateway opcode
-        match payload.op { 
+        match payload.op {
             GatewayOpcode::Dispatch => {
+                print!(" - {:?}", payload.t.as_ref().unwrap());
 
-                println!("{:?}", payload.t.as_ref().unwrap());
-                
                 match payload.t.unwrap() {
-                    GatewayEvent::MessageCreate => {
-                        println!("NEW MESSAGE");
-                    }
-                    GatewayEvent::MessageDelete => {
-                        if let Err(_) = self.handle_reconnect_and_resume().await {
-                            return Err(())
-                        }
-                    }
+                    GatewayEvent::MessageCreate => {} // impl later
+                    GatewayEvent::MessageDelete => {} // impl later
                     GatewayEvent::Resumed => {
-                        println!("SUCCESSFULLY RESUMED");
+                        print!("/ CONNECITON RESUMED");
                     }
                     _ => {}
                 }
@@ -105,23 +98,22 @@ impl Shard {
                     WsRecData::Ready { session_id } => {
                         self.session_id = Some(session_id);
                     }
-                    _ => {} 
+                    _ => {}
                 }
             }
             GatewayOpcode::Reconnect => {
                 if let Err(()) = self.handle_reconnect_and_resume().await {
                     println!("ERROR RECONNECTING");
-                    return Err(())
+                    return Err(());
                 }
             }
-            GatewayOpcode::Hello => {
-                match payload.d.unwrap() {
-                    WsRecData::Heartbeat { heartbeat_interval } => {
-                        self.heartbeat_interval = Some(Duration::from_millis(heartbeat_interval-5000));
-                    }
-                    _ => {}
+            GatewayOpcode::Hello => match payload.d.unwrap() {
+                WsRecData::Heartbeat { heartbeat_interval } => {
+                    self.heartbeat_interval =
+                        Some(Duration::from_millis(heartbeat_interval - 5000));
                 }
-            }
+                _ => {}
+            },
             GatewayOpcode::HeartbeatAck => {
                 self.last_heartbeat_ack = Some(Instant::now());
                 self.last_heartbeat_acknowledged = true;
@@ -129,22 +121,28 @@ impl Shard {
             _ => {}
         }
 
+        println!();
+
         Ok(())
     }
 
     pub async fn handle_reconnect_and_resume(&mut self) -> Result<(), ()> {
-
         println!("RECONNECTING AND RESUMING!");
 
         self.client.close().await;
-        self.client = WsClient::resume(crate::constants::GATEWAY, self.token.clone(), self.session_id.clone().unwrap(), self.seq).await?;
+        self.client = WsClient::resume(
+            crate::constants::GATEWAY,
+            self.token.clone(),
+            self.session_id.clone().unwrap(),
+            self.seq,
+        )
+        .await?;
 
         Ok(())
     }
 
     /// Starts [`Shard`].
     pub async fn start(&mut self) -> Result<(), ()> {
-
         let msg = serde_json::json!({
             "op": GatewayOpcode::Identify,
             "d": {
@@ -164,42 +162,54 @@ impl Shard {
             }
         });
 
-        if let Err(()) = self.client.write(tungstenite::Message::Text(msg.to_string())).await {
-            return Err(())
+        if let Err(()) = self
+            .client
+            .write(tungstenite::Message::Text(msg.to_string()))
+            .await
+        {
+            return Err(());
         }
 
         loop {
-
             // handle heartbeat
-            if let Err(()) = self.handle_heartbeat().await {
-                return Err(())
+            if let Err(_) = self.handle_heartbeat().await {
+                break;
             }
 
-            if self.count % 10000000 == 0 && self.count >= 10000000 {
-                println!("count {}/10000000 check: {:?}", &self.count, Instant::now());
-            } self.count+=1;
+            if self.count % 100000000 == 0 && self.count >= 100000000 {
+                println!(
+                    "count {}/100000000 check: {:?}",
+                    &self.count,
+                    Instant::now()
+                );
+            }
+            self.count += 1;
 
             // read websocket for new payload
             if let Ok(option_message) = self.client.read().await {
                 match option_message {
                     Some(message) => {
-
-                        if message.is_close() { break }
-                        let payload = serde_json::from_str::<WsRecPayload>(message.into_text().unwrap().as_str())
-                        .unwrap_or_else(|err| { panic!("{err:?}"); });
-
-                        if let Err(()) = self.handle_payload(payload).await {
-                            break
+                        if message.is_close() {
+                            break;
                         }
+                        let payload = serde_json::from_str::<WsRecPayload>(
+                            message.into_text().unwrap().as_str(),
+                        )
+                        .unwrap_or_else(|err| {
+                            panic!("{err:?}");
+                        });
 
+                        if let Err(_) = self.handle_payload(payload).await {
+                            break;
+                        }
                     }
                     _ => {}
                 }
-            } else { break }
-
+            } else {
+                break;
+            }
         }
 
-        Ok(())
+        Err(())
     }
-
 }
