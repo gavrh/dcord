@@ -66,6 +66,7 @@ impl Shard {
         {
             return Err(());
         }
+
         self.last_heartbeat_sent = Some(Instant::now());
         self.last_heartbeat_acknowledged = false;
 
