@@ -86,8 +86,12 @@ impl WsClient {
         self.0.is_terminated()
     }
 
-    pub async fn close(&mut self) {
-        let _ = self.0.close(None).await;
+    pub async fn close(&mut self) -> Result<(), ()> {
+        if let Err(_) = self.0.close(None).await {
+            return Err(());
+        }
+
+        Ok(())
     }
 
 }
@@ -113,7 +117,6 @@ pub enum WsRecData {
 }
 
 #[derive(Debug, Deserialize)]
-#[allow(dead_code)]
 pub struct WsRecPayload {
     pub op: GatewayOpcode,
     pub s: Option<u64>,
