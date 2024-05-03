@@ -55,14 +55,12 @@ impl GatewayIntents {
 /// **PS:** If your app qualifies for verification, you must first **verify your app** and request access to these intents
 /// during the verification process. If your app is already verified and you need to request additional privileged
 /// intents, you can **contact Discord support**.
-///
 /// - [Discord Documentation Reference](https://discord.com/developers/docs/topics/gateway#gateway-intents)
 #[derive(Clone, Debug, Serialize)]
 pub enum GatewayIntent {
     /// Enables all gateway events.
     All = 53608447,
     /// Enables the following gateway events:
-    ///
     /// - [`GatewayEvent::GuildCreate`]
     /// - [`GatewayEvent::GuildUpdate`]
     /// - [`GatewayEvent::GuildDelete`]
@@ -84,87 +82,72 @@ pub enum GatewayIntent {
     /// - [`GatewayEvent::StageInstanceDelete`]
     Guilds = 1 << 0,
     /// Enables the following gateway events:
-    ///
     /// - [`GatewayEvent::GuildMemberAdd`]
     /// - [`GatewayEvent::GuildMemberUpdate`]
     /// - [`GatewayEvent::GuildMemberRemove`]
     /// - [`GatewayEvent::ThreadMembersUpdate`]
     GuildMembers = 1 << 1,
     /// Enables the following gateway events:
-    ///
     /// - [`GatewayEvent::GuildAuditLogEntryCreate`]
     /// - [`GatewayEvent::GuildBanAdd`]
     /// - [`GatewayEvent::GuildBanRemove`]
     GuildModeration = 1 << 2,
     /// Enables the following gateway events:
-    ///
     /// - [`GatewayEvent::GuildEmojisUpdate`]
     /// - [`GatewayEvent::GuildStickersUpdate`]
     GuildEmojisAndStickers = 1 << 3,
     /// Enables the following gateway events:
-    ///
     /// - [`GatewayEvent::GuildIntegrationsUpdate`]
     /// - [`GatewayEvent::IntegrationCreate`]
     /// - [`GatewayEvent::IntegrationUpdate`]
     /// - [`GatewayEvent::IntegrationDelete`]
     GuildIntegrations = 1 << 4,
     /// Enables the following gateway events:
-    ///
     /// - [`GatewayEvent::WebhooksUpdate`]
     GuildWebhooks = 1 << 5,
     /// Enables the following gateway events:
-    ///
     /// - [`GatewayEvent::InviteCreate`]
     /// - [`GatewayEvent::InviteDelete`]
     GuildInvites = 1 << 6,
     /// Enables the following gateway events:
-    ///
     /// - [`GatewayEvent::VoiceStateUpdate`]
     GuildVoiceStates = 1 << 7,
     /// Enables the following gateway events:
-    ///
     /// - [`GatewayEvent::PresenceUpdate`]
     GuildPresences = 1 << 8,
     /// Enables the following gateway events:
-    ///
     /// - [`GatewayEvent::MessageCreate`]
     /// - [`GatewayEvent::MessageUpdate`]
     /// - [`GatewayEvent::MessageDelete`]
     /// - [`GatewayEvent::MessageDeleteBulk`]
     GuildMessages = 1 << 9,
     /// Enables the following gateway events:
-    ///
     /// - [`GatewayEvent::MessageReactionAdd`]
     /// - [`GatewayEvent::MessageReactionRemove`]
     /// - [`GatewayEvent::MessageReactionRemoveAll`]
     /// - [`GatewayEvent::MessageReactionRemoveEmoji`]
     GuildMessageReactions = 1 << 10,
     /// Enables the following gateway events:
-    ///
     /// - [`GatewayEvent::TypingStart`]
     GuildMessageTyping = 1 << 11,
     /// Enables the following gateway events:
-    ///
     /// - [`GatewayEvent::MessageCreate`]
     /// - [`GatewayEvent::MessageUpdate`]
     /// - [`GatewayEvent::MessageDelete`]
     /// - [`GatewayEvent::MessageDeleteBulk`]
     DirectMessages = 1 << 12,
     /// Enables the following gateway events:
-    ///
     /// - [`GatewayEvent::MessageReactionAdd`]
     /// - [`GatewayEvent::MessageReactionRemove`]
     /// - [`GatewayEvent::MessageReactionRemoveAll`]
     /// - [`GatewayEvent::MessageReactionRemoveEmoji`]
     DirectMessageReactions = 1 << 13,
     /// Enables the following gateway events:
-    ///
     /// - [`GatewayEvent::TypingStart`]
     DirectMessageTyping = 1 << 14,
     /// Enables viewing contents of messages.
     MessageContent = 1 << 15,
     /// Enables the following gateway events:
-    ///
     /// - [`GatewayEvent::GuildScheduledEventCreate`]
     /// - [`GatewayEvent::GuildScheduledEventUpdate`]
     /// - [`GatewayEvent::GuildScheduledEventDelete`]
@@ -172,22 +155,18 @@ pub enum GatewayIntent {
     /// - [`GatewayEvent::GuildScheduledEventUserRemove`]
     GuildScheduledEvents = 1 << 16,
     /// Enables the following gateway events:
-    ///
     /// - [`GatewayEvent::AutoModerationRuleCreate`]
     /// - [`GatewayEvent::AutoModerationRuleUpdate`]
     /// - [`GatewayEvent::AutoModerationRuleDelete`]
     AutoModerationConfiguration = 1 << 20,
     /// Enables the following gateway events:
-    ///
     /// [`GatewayEvent::AutoModerationActionExecution`]
     AutoModerationExecution = 1 << 21,
     /// Enables the following gateway events:
-    ///
     /// - [`GatewayEvent::MessagePollVoteAdd`]
     /// - [`GatewayEvent::MessagePollVoteRemove`]
     GuildMessagePolls = 1 << 24,
     /// Enables the following gateway events:
-    ///
     /// - [`GatewayEvent::MessagePollVoteAdd`]
     /// - [`GatewayEvent::MessagePollVoteRemove`]
     DirectMessagePolls = 1 << 25,
@@ -196,7 +175,6 @@ pub enum GatewayIntent {
 /// Gateway Events are received and encapsulated in an event payload, and are sent by Discord
 /// to an app through a Gateway connection. Receive events correspond to events that happen in a
 /// Discord server where the app is installed.
-///
 /// - [Discord Documentation Reference](https://discord.com/developers/docs/topics/gateway-events#receive-events)
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]

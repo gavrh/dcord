@@ -59,11 +59,7 @@ impl Shard {
             "d": self.seq
         });
 
-        if let Err(_) = self
-            .client
-            .write(tungstenite::Message::Text(heartbeat_payload.to_string()))
-            .await
-        {
+        if let Err(_) = self.client.write(tungstenite::Message::Text(heartbeat_payload.to_string())).await {
             return Err(());
         }
 
@@ -136,8 +132,7 @@ impl Shard {
             self.token.clone(),
             self.session_id.clone().unwrap(),
             self.seq,
-        )
-        .await?;
+        ).await?;
 
         Ok(())
     }
@@ -163,11 +158,7 @@ impl Shard {
             }
         });
 
-        if let Err(()) = self
-            .client
-            .write(tungstenite::Message::Text(msg.to_string()))
-            .await
-        {
+        if let Err(()) = self.client.write(tungstenite::Message::Text(msg.to_string())).await {
             return Err(());
         }
 
@@ -193,13 +184,9 @@ impl Shard {
                         if message.is_close() {
                             break;
                         }
-                        let payload = serde_json::from_str::<WsRecPayload>(
-                            message.into_text().unwrap().as_str(),
-                        )
-                        .unwrap_or_else(|err| {
+                        let payload = serde_json::from_str::<WsRecPayload>(message.into_text().unwrap().as_str()).unwrap_or_else(|err| {
                             panic!("{err:?}");
                         });
-
                         if let Err(_) = self.handle_payload(payload).await {
                             break;
                         }
