@@ -1,7 +1,5 @@
 # dcord
 
-> made with <3
-
 [![Documentation](https://img.shields.io/badge/Docs.rs-gray?logo="docs.rs"&logoColor="yellow")](https://docs.rs/dcord)
 [![Version](https://img.shields.io/crates/v/dcord?label="Crates.io"&color="orange"&logo="rust"&logoColor="orange")](https://crates.io/crates/dcord)
 ![Size](https://img.shields.io/github/languages/code-size/grhx/dcord?label="Size"&color="green")
