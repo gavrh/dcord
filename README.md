@@ -17,7 +17,7 @@
 ## Getting Started
 
 ### Github
-setup coming soon...
+soon...
 
 ### Cargo
 ```
