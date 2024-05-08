@@ -126,7 +126,7 @@ impl Shard {
     pub async fn handle_reconnect_and_resume(&mut self) -> Result<(), ()> {
         println!("RECONNECTING AND RESUMING!");
 
-        self.client.close().await;
+        self.client.close().await?;
         self.client = WsClient::resume(
             crate::constants::GATEWAY,
             self.token.clone(),
