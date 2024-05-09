@@ -163,6 +163,10 @@ impl Shard {
         }
 
         loop {
+            // check if connection is still alive
+            if self.client.is_closed() {
+                break;
+            }
             // handle heartbeat
             if let Err(_) = self.handle_heartbeat().await {
                 break;
