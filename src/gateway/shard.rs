@@ -99,6 +99,7 @@ impl Shard {
                 }
             }
             GatewayOpcode::Reconnect => {
+                println!("ATTEMPTING TO RECONNECT");
                 if let Err(()) = self.handle_reconnect_and_resume().await {
                     println!("ERROR RECONNECTING");
                     return Err(());
