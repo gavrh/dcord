@@ -13,6 +13,7 @@ use futures::{
 };
 
 
+/// Discord Gateway Websocket Client
 #[derive(Debug)]
 pub struct WsClient(WebSocketStream<MaybeTlsStream<TcpStream>>);
 
