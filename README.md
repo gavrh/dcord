@@ -12,7 +12,7 @@
 
 > [!CAUTION]
 >
-> This library is in early stage development and is not ready for any sort of use or production build, most features are incomplete or missing.
+> This library is in early stage development and is not ready for any sort of use or production build.
 
 ## Getting Started
 
