@@ -59,7 +59,6 @@ impl Shard {
             "d": self.seq
         });
 
-        println!("ATTEMPTING HEARTBEAT");
         if let Err(_) = self.client.write(tungstenite::Message::Text(heartbeat_payload.to_string())).await {
             println!("ERROR SENDING HEARTBEAT");
             return Err(());
