@@ -3,7 +3,6 @@
 [![Documentation](https://img.shields.io/badge/Docs.rs-gray?logo="docs.rs"&logoColor="yellow")](https://docs.rs/dcord)
 [![Version](https://img.shields.io/crates/v/dcord?label="Crates.io"&color="orange"&logo="rust"&logoColor="orange")](https://crates.io/crates/dcord)
 ![Size](https://img.shields.io/github/languages/code-size/grhx/dcord?label="Size"&color="green")
-[![Downloads](https://img.shields.io/crates/d/dcord?label="Downloads"&color="blue")](https://crates.io/crates/dcord)
 
 [![License](https://img.shields.io/github/license/grhx/dcord?label="License"&color="AA55AA")](https://github.com/grhx/dcord/blob/master/LICENSE)
 [![Discord](https://img.shields.io/discord/81384788765712384?label="Discord%20API"&logo="discord"&logoColor="7289da"&color="7289da")](https://discord.com/invite/discord-api)
