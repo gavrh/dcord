@@ -1,4 +1,4 @@
-# dcord
+# dcord-rs
 
 [![Documentation](https://img.shields.io/badge/Docs.rs-gray?logo="docs.rs"&logoColor="yellow")](https://docs.rs/dcord)
 ![Size](https://img.shields.io/github/languages/code-size/grhx/dcord?label="Size"&color="green")
