@@ -33,4 +33,4 @@ dcord = { package = "discord", version = "0.0.3" }
 ```
 
 ### Starter Code
-soon...
+
