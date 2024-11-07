@@ -2,7 +2,7 @@
 name = "dcord"
 version = "0.0.2"
 edition = "2021"
-authors = ["https://github.com/grhx"]
+authors = ["https://github.com/gavrh"]
 
 description = "Discord API Library"
 readme = "README.md"
