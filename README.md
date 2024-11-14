@@ -31,6 +31,3 @@ tokio = { version = "1.37.0", features = ["macros", "rt-multi-thread"] }
 # if you want to alias the package
 dcord = { package = "discord", version = "0.0.3" }
 ```
-
-### Starter Code
-
